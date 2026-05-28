@@ -116,14 +116,24 @@ PORTFOLIOS = {
 
 def fetch_price_yahoo(symbol):
     try:
-        url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?interval=1d&range=2d"
+        url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?interval=1d&range=5d"
         req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
         with urllib.request.urlopen(req, timeout=10) as response:
             data = json.loads(response.read().decode())
             result = data["chart"]["result"][0]
             meta = result["meta"]
             price = meta["regularMarketPrice"]
-            prev_close = meta.get("previousClose", meta.get("chartPreviousClose", price))
+            # Get yesterday's close from the actual chart data (second to last value)
+            closes = result["indicators"]["quote"][0].get("close", [])
+            prev_close = None
+            if len(closes) >= 2:
+                # Find the most recent non-null close before today
+                for c in reversed(closes[:-1]):
+                    if c is not None:
+                        prev_close = c
+                        break
+            if prev_close is None:
+                prev_close = meta.get("chartPreviousClose", price)
             day_change = price - prev_close
             day_change_pct = (day_change / prev_close * 100) if prev_close else 0
             return {"price": price, "prev_close": prev_close, "day_change": day_change, "day_change_pct": day_change_pct}
