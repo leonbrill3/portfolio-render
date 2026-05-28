@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: portfolio-tracker
+    runtime: python
+    buildCommand: ""
+    startCommand: python server.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11"
+    plan: free
