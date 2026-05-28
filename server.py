@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Portfolio Server for Render - serves HTML and updates prices on demand"""
+"""Portfolio Server for Render - Multi-portfolio with tabs"""
 
 import http.server
 import json
@@ -9,34 +9,110 @@ from datetime import datetime
 
 PORT = int(os.environ.get("PORT", 10000))
 
-# Portfolio holdings
-HOLDINGS = {
-    "RIG": {"name": "Transocean Ltd", "qty": 25000, "purchase_price": 3.90, "purchase_date": "16.12.2025", "cost": 97500},
-    "PSH.AS": {"name": "Pershing Square Holdings", "qty": 3000, "purchase_price": 63.77, "purchase_date": "25.02.2026", "cost": 191310, "currency": "EUR", "fx_rate": 1.163},
-    "MSFT": {"name": "Microsoft Corp", "qty": 300, "purchase_price": 375.00, "purchase_date": "24.03.2026", "cost": 112500},
-    "CROX": {"name": "Crocs Inc", "qty": 1500, "purchase_price": 76.00, "purchase_date": "19.03.2026", "cost": 114000},
-    "CNSWF": {"name": "Constellation Software", "qty": 100, "purchase_price": 2478.99, "purchase_date": "19.03.2026", "cost": 247899},
-    "PDD": {"name": "PDD Holdings", "qty": 1000, "purchase_price": 114.00, "purchase_date": "10.12.2025", "cost": 114000},
-    "UBER": {"name": "Uber Technologies", "qty": 3000, "purchase_price": 78.17, "purchase_date": "11.02.2026", "cost": 234510},
-    "AMR": {"name": "Alpha Metallurgical Resources", "qty": 1750, "purchase_price": 159.00, "purchase_date": "26.02.2026", "cost": 278250},
-    "BN": {"name": "Brookfield Corp", "qty": 6000, "purchase_price": 45.20, "purchase_date": "10.10.2025", "cost": 271200},
-    "CNR": {"name": "Core Natural Resources", "qty": 1000, "purchase_price": 75.50, "purchase_date": "31.10.2025", "cost": 75500},
-    "MIAX": {"name": "Miami International Holdings", "qty": 2500, "purchase_price": 42.00, "purchase_date": "26.01.2026", "cost": 105000},
-    "SNAP": {"name": "Snap Inc", "qty": 20000, "purchase_price": 4.00, "purchase_date": "28.03.2026", "cost": 80000},
+# ============== PORTFOLIO 1: ANNABAY ==============
+ANNABAY_HOLDINGS = {
+    "RIG": {"name": "Transocean Ltd", "qty": 25000, "cost": 97500},
+    "PSH.AS": {"name": "Pershing Square Holdings", "qty": 3000, "cost": 191310, "currency": "EUR", "fx_rate": 1.163},
+    "MSFT": {"name": "Microsoft Corp", "qty": 300, "cost": 112500},
+    "CROX": {"name": "Crocs Inc", "qty": 1500, "cost": 114000},
+    "CNSWF": {"name": "Constellation Software", "qty": 100, "cost": 247899},
+    "PDD": {"name": "PDD Holdings", "qty": 1000, "cost": 114000},
+    "UBER": {"name": "Uber Technologies", "qty": 3000, "cost": 234510},
+    "AMR": {"name": "Alpha Metallurgical Resources", "qty": 1750, "cost": 278250},
+    "BN": {"name": "Brookfield Corp", "qty": 6000, "cost": 271200},
+    "CNR": {"name": "Core Natural Resources", "qty": 1000, "cost": 75500},
+    "MIAX": {"name": "Miami International Holdings", "qty": 2500, "cost": 105000},
+    "SNAP": {"name": "Snap Inc", "qty": 20000, "cost": 80000},
 }
-
-OPTIONS = {
-    "WDAY": {"name": "Call Workday-A JAN28 $150", "contracts": 25, "cost_price": 40.00, "cost": 100000, "strike": 150, "expiry": "21.01.2028", "trade_date": "11.02.2026"},
-    "SOC": {"name": "Call Sable Offshore JAN27 $12.5", "contracts": 100, "cost_price": 6.70, "cost": 67000, "strike": 12.5, "expiry": "15.01.2027", "trade_date": "15.10.2025"},
+ANNABAY_OPTIONS = {
+    "WDAY": {"name": "Call Workday JAN28 $150", "contracts": 25, "cost": 100000, "strike": 150, "expiry": "21.01.2028"},
+    "SOC": {"name": "Call Sable Offshore JAN27 $12.5", "contracts": 100, "cost": 67000, "strike": 12.5, "expiry": "15.01.2027"},
 }
-
-FOREIGN_HOLDINGS = {
-    "DBO.TO": {"name": "D-Box Technologies (CAD)", "qty": 125000, "purchase_price": 0.80, "purchase_date": "11.02.2026", "cost": 73893, "currency": "CAD", "fx_rate": 1.376},
-    "TGO.TO": {"name": "Terago Inc (CAD)", "qty": 150000, "purchase_price": 0.90, "purchase_date": "01.04.2026", "cost": 97816, "currency": "CAD", "fx_rate": 1.376},
-    "1970.HK": {"name": "IMAX China Holding (HKD)", "qty": 13000, "purchase_price": 7.60, "purchase_date": "13.10.2025", "cost": 12782, "currency": "HKD", "fx_rate": 7.8266},
+ANNABAY_FOREIGN = {
+    "DBO.TO": {"name": "D-Box Technologies", "qty": 125000, "cost": 73893, "currency": "CAD", "fx_rate": 1.376},
+    "TGO.TO": {"name": "Terago Inc", "qty": 150000, "cost": 97816, "currency": "CAD", "fx_rate": 1.376},
+    "1970.HK": {"name": "IMAX China Holding", "qty": 13000, "cost": 12782, "currency": "HKD", "fx_rate": 7.8266},
 }
+ANNABAY_CASH = {"USD": 162163, "EUR": 201350}
 
-CASH = {"USD": 162163, "EUR": 201350}
+# ============== PORTFOLIO 2: SCHWAB 1 ==============
+SCHWAB1_HOLDINGS = {
+    "BN": {"name": "Brookfield Corp F Class A", "qty": 3000, "cost": 60860},
+    "CNR": {"name": "Core Natural Resources", "qty": 1108, "cost": 82984},
+    "PNPFF": {"name": "Pinetree Capital Ltd", "qty": 5700, "cost": 47502},
+    "SOC": {"name": "Sable Offshore Corp", "qty": 0, "cost": 0},  # Stock position shows dash
+    "TAVHY": {"name": "TAV Havalimanlari", "qty": 7000, "cost": 110846},
+    "TDW": {"name": "Tidewater Inc", "qty": 0, "cost": 0},  # Stock position shows dash
+    "TOITF": {"name": "Topicus.com Inc", "qty": 500, "cost": 25003},
+}
+SCHWAB1_OPTIONS = {
+    "SOC": {"name": "Call Sable Offshore JAN28 $10", "contracts": 50, "cost": 11383, "strike": 10, "expiry": "21.01.2028"},
+    "TDW": {"name": "Call Tidewater JAN27 $60", "contracts": 100, "cost": 81315, "strike": 60, "expiry": "15.01.2027"},
+}
+SCHWAB1_CASH = {"USD": -128904}  # Margin balance
+
+# ============== PORTFOLIO 3: SCHWAB 2 ==============
+SCHWAB2_HOLDINGS = {
+    "CNR": {"name": "Core Natural Resources", "qty": 1000, "cost": 83880},
+    "PDD": {"name": "PDD Holdings ADR", "qty": 1000, "cost": 93750},
+    "TAVHY": {"name": "TAV Havalimanlari", "qty": 5000, "cost": 112227},
+    "TOITF": {"name": "Topicus.com Inc", "qty": 1000, "cost": 70527},
+    "UBER": {"name": "Uber Technologies", "qty": 1500, "cost": 107879},
+}
+SCHWAB2_TBILLS = {
+    "912797TD9": {"name": "US Treasury Bill 26U", "qty": 500000, "cost": 498661},
+    "912797TF4": {"name": "US Treasury Bill 26U", "qty": 500000, "cost": 497964},
+}
+SCHWAB2_CASH = {"USD": 332402}
+
+# ============== PORTFOLIO 4: MORGAN STANLEY ==============
+MS_HOLDINGS = {
+    "MSFT": {"name": "Microsoft Corp", "qty": 700, "cost": 78555},
+    "AMZN": {"name": "Amazon.com Inc", "qty": 700, "cost": 76510},
+    "VAL": {"name": "Valaris Ltd", "qty": 1800000, "cost": 55800},  # 1.8M qty from screenshot
+    "NE": {"name": "Noble Corp", "qty": 3000000, "cost": 59190},  # 3M qty from screenshot
+    "SNAP": {"name": "Snap Inc", "qty": 20000000, "cost": 99230},  # 20M qty from screenshot
+    "LMGIF": {"name": "Lumine Group Inc", "qty": 1501000, "cost": 21888},
+    "AAL": {"name": "American Airlines", "qty": 2000, "cost": 36},
+}
+# Note: PSTH and ESC Pershing Square are not publicly traded
+MS_CASH = {"USD": 2135}
+
+# All portfolios config
+PORTFOLIOS = {
+    "annabay": {
+        "name": "Annabay",
+        "holdings": ANNABAY_HOLDINGS,
+        "options": ANNABAY_OPTIONS,
+        "foreign": ANNABAY_FOREIGN,
+        "tbills": {},
+        "cash": ANNABAY_CASH,
+    },
+    "schwab1": {
+        "name": "Schwab 1",
+        "holdings": SCHWAB1_HOLDINGS,
+        "options": SCHWAB1_OPTIONS,
+        "foreign": {},
+        "tbills": {},
+        "cash": SCHWAB1_CASH,
+    },
+    "schwab2": {
+        "name": "Schwab 2",
+        "holdings": SCHWAB2_HOLDINGS,
+        "options": {},
+        "foreign": {},
+        "tbills": SCHWAB2_TBILLS,
+        "cash": SCHWAB2_CASH,
+    },
+    "morgan": {
+        "name": "Morgan Stanley",
+        "holdings": MS_HOLDINGS,
+        "options": {},
+        "foreign": {},
+        "tbills": {},
+        "cash": MS_CASH,
+    },
+}
 
 def fetch_price_yahoo(symbol):
     try:
@@ -57,26 +133,70 @@ def fetch_price_yahoo(symbol):
 
 def fetch_all_prices():
     prices = {}
-    all_symbols = list(HOLDINGS.keys()) + list(OPTIONS.keys()) + list(FOREIGN_HOLDINGS.keys())
+    all_symbols = set()
+    for p in PORTFOLIOS.values():
+        all_symbols.update(p["holdings"].keys())
+        all_symbols.update(p["options"].keys())
+        all_symbols.update(p["foreign"].keys())
+
     for symbol in all_symbols:
+        if symbol.startswith("91279"):  # Skip T-bills
+            continue
         data = fetch_price_yahoo(symbol)
         if data:
             prices[symbol] = data
             print(f"  {symbol}: {data['price']}")
     return prices
 
-def generate_html(prices):
-    today = datetime.now().strftime("%B %d, %Y")
-    update_time = datetime.now().strftime("%I:%M %p")
+def calc_option_value(underlying_price, strike, expiry_str, contracts):
+    intrinsic_per_share = max(0, underlying_price - strike)
+    intrinsic_value = intrinsic_per_share * 100 * contracts
 
+    expiry_parts = expiry_str.split(".")
+    expiry_date = datetime(int(expiry_parts[2]), int(expiry_parts[1]), int(expiry_parts[0]))
+    days_to_expiry = (expiry_date - datetime.now()).days
+
+    if days_to_expiry > 365:
+        moneyness = underlying_price / strike
+        if moneyness < 0.7:
+            time_value_per_share = strike * 0.05
+        elif moneyness < 0.9:
+            time_value_per_share = strike * 0.12
+        elif moneyness < 1.1:
+            time_value_per_share = strike * 0.20
+        else:
+            time_value_per_share = strike * 0.15
+    elif days_to_expiry > 180:
+        moneyness = underlying_price / strike
+        if moneyness < 0.8:
+            time_value_per_share = strike * 0.03
+        elif moneyness < 1.0:
+            time_value_per_share = strike * 0.08
+        else:
+            time_value_per_share = strike * 0.10
+    else:
+        time_value_per_share = strike * 0.02 if intrinsic_per_share > 0 else strike * 0.01
+
+    time_value = time_value_per_share * 100 * contracts
+    est_value = intrinsic_value + time_value
+
+    if intrinsic_per_share > 0:
+        delta = min(0.85, 0.5 + (intrinsic_per_share / strike) * 0.5)
+    else:
+        delta = max(0.15, 0.5 - abs(underlying_price - strike) / strike * 0.5)
+
+    return est_value, delta
+
+def generate_portfolio_html(portfolio_id, portfolio, prices):
     stock_rows = []
     total_stock_cost = 0
     total_stock_value = 0
     total_day_gain = 0
-    gainers = []
-    losers = []
 
-    for symbol, data in HOLDINGS.items():
+    # Regular holdings
+    for symbol, data in portfolio["holdings"].items():
+        if data["qty"] == 0:
+            continue
         price_data = prices.get(symbol)
         if not price_data:
             continue
@@ -95,7 +215,7 @@ def generate_html(prices):
             day_gain = data["qty"] * day_change
 
         gain_loss = current_value - data["cost"]
-        return_pct = (gain_loss / data["cost"]) * 100
+        return_pct = (gain_loss / data["cost"]) * 100 if data["cost"] > 0 else 0
 
         total_stock_cost += data["cost"]
         total_stock_value += current_value
@@ -106,29 +226,21 @@ def generate_html(prices):
         day_class = "positive" if day_change >= 0 else "negative"
         day_sign = "+" if day_change >= 0 else ""
 
-        if gain_loss >= 0:
-            gainers.append((symbol, data["name"], gain_loss, return_pct))
-        else:
-            losers.append((symbol, data["name"], gain_loss, return_pct))
+        stock_rows.append(f"""<tr>
+            <td class="ticker">{symbol}</td>
+            <td>{data["name"]}</td>
+            <td class="number">{data["qty"]:,}</td>
+            <td class="number">${data["cost"]:,}</td>
+            <td class="number">{currency_symbol}{current_price:,.2f}</td>
+            <td class="number {day_class}">{day_sign}{day_change_pct:.2f}%</td>
+            <td class="number">${current_value:,.0f}</td>
+            <td class="number {day_class}">{day_sign}${abs(day_gain):,.0f}</td>
+            <td class="number {gain_class}">{gain_sign}${gain_loss:,.0f}</td>
+            <td class="{gain_class} percent">{gain_sign}{return_pct:.2f}%</td>
+        </tr>""")
 
-        stock_rows.append(f"""
-                <tr>
-                    <td class="ticker" data-value="{symbol}">{symbol}</td>
-                    <td data-value="{data["name"]}">{data["name"]}</td>
-                    <td class="number" data-value="{data["qty"]}">{data["qty"]:,}</td>
-                    <td data-value="{data["purchase_date"]}">{data["purchase_date"]}</td>
-                    <td class="number" data-value="{data["purchase_price"]}">{currency_symbol}{data["purchase_price"]:,.2f}</td>
-                    <td class="number" data-value="{data["cost"]}">${data["cost"]:,}</td>
-                    <td class="number" data-value="{current_price}">{currency_symbol}{current_price:,.2f}</td>
-                    <td class="number {day_class}" data-value="{day_change}">{day_sign}{currency_symbol}{abs(day_change):,.2f}</td>
-                    <td class="number {day_class}" data-value="{day_change_pct}">{day_sign}{day_change_pct:.2f}%</td>
-                    <td class="number" data-value="{current_value}">${current_value:,.0f}</td>
-                    <td class="number {day_class}" data-value="{day_gain}">{day_sign}${abs(day_gain):,.0f}</td>
-                    <td class="number {gain_class}" data-value="{gain_loss}">{gain_sign}${gain_loss:,.0f}</td>
-                    <td class="{gain_class} percent" data-value="{return_pct}">{gain_sign}{return_pct:.2f}%</td>
-                </tr>""")
-
-    for symbol, data in FOREIGN_HOLDINGS.items():
+    # Foreign holdings
+    for symbol, data in portfolio.get("foreign", {}).items():
         price_data = prices.get(symbol)
         if not price_data:
             continue
@@ -140,7 +252,7 @@ def generate_html(prices):
         current_value_usd = (data["qty"] * current_price) / data["fx_rate"]
         day_gain_usd = (data["qty"] * day_change) / data["fx_rate"]
         gain_loss = current_value_usd - data["cost"]
-        return_pct = (gain_loss / data["cost"]) * 100
+        return_pct = (gain_loss / data["cost"]) * 100 if data["cost"] > 0 else 0
 
         total_stock_cost += data["cost"]
         total_stock_value += current_value_usd
@@ -153,34 +265,26 @@ def generate_html(prices):
 
         currency_symbol = "C$" if data["currency"] == "CAD" else "HK$"
 
-        if gain_loss >= 0:
-            gainers.append((symbol, data["name"], gain_loss, return_pct))
-        else:
-            losers.append((symbol, data["name"], gain_loss, return_pct))
+        stock_rows.append(f"""<tr>
+            <td class="ticker">{symbol}</td>
+            <td>{data["name"]}</td>
+            <td class="number">{data["qty"]:,}</td>
+            <td class="number">${data["cost"]:,}</td>
+            <td class="number">{currency_symbol}{current_price:.2f}</td>
+            <td class="number {day_class}">{day_sign}{day_change_pct:.2f}%</td>
+            <td class="number">${current_value_usd:,.0f}</td>
+            <td class="number {day_class}">{day_sign}${abs(day_gain_usd):,.0f}</td>
+            <td class="number {gain_class}">{gain_sign}${gain_loss:,.0f}</td>
+            <td class="{gain_class} percent">{gain_sign}{return_pct:.2f}%</td>
+        </tr>""")
 
-        stock_rows.append(f"""
-                <tr>
-                    <td class="ticker" data-value="{symbol}">{symbol}</td>
-                    <td data-value="{data["name"]}">{data["name"]}</td>
-                    <td class="number" data-value="{data["qty"]}">{data["qty"]:,}</td>
-                    <td data-value="{data["purchase_date"]}">{data["purchase_date"]}</td>
-                    <td class="number" data-value="{data["purchase_price"]}">{currency_symbol}{data["purchase_price"]:.2f}</td>
-                    <td class="number" data-value="{data["cost"]}">${data["cost"]:,}</td>
-                    <td class="number" data-value="{current_price}">{currency_symbol}{current_price:.2f}</td>
-                    <td class="number {day_class}" data-value="{day_change}">{day_sign}{currency_symbol}{abs(day_change):.2f}</td>
-                    <td class="number {day_class}" data-value="{day_change_pct}">{day_sign}{day_change_pct:.2f}%</td>
-                    <td class="number" data-value="{current_value_usd}">${current_value_usd:,.0f}</td>
-                    <td class="number {day_class}" data-value="{day_gain_usd}">{day_sign}${abs(day_gain_usd):,.0f}</td>
-                    <td class="number {gain_class}" data-value="{gain_loss}">{gain_sign}${gain_loss:,.0f}</td>
-                    <td class="{gain_class} percent" data-value="{return_pct}">{gain_sign}{return_pct:.2f}%</td>
-                </tr>""")
-
+    # Options
     option_rows = []
     total_option_cost = 0
     total_option_value = 0
     total_option_day_gain = 0
 
-    for symbol, data in OPTIONS.items():
+    for symbol, data in portfolio.get("options", {}).items():
         price_data = prices.get(symbol)
         if not price_data:
             continue
@@ -188,48 +292,11 @@ def generate_html(prices):
         underlying_price = price_data["price"]
         underlying_day_change = price_data["day_change"]
 
-        intrinsic_per_share = max(0, underlying_price - data["strike"])
-        intrinsic_value = intrinsic_per_share * 100 * data["contracts"]
-
-        expiry_parts = data["expiry"].split(".")
-        expiry_date = datetime(int(expiry_parts[2]), int(expiry_parts[1]), int(expiry_parts[0]))
-        days_to_expiry = (expiry_date - datetime.now()).days
-
-        if days_to_expiry > 365:
-            moneyness = underlying_price / data["strike"]
-            if moneyness < 0.7:
-                time_value_per_share = data["strike"] * 0.05
-            elif moneyness < 0.9:
-                time_value_per_share = data["strike"] * 0.12
-            elif moneyness < 1.1:
-                time_value_per_share = data["strike"] * 0.20
-            else:
-                time_value_per_share = data["strike"] * 0.15
-        elif days_to_expiry > 180:
-            moneyness = underlying_price / data["strike"]
-            if moneyness < 0.8:
-                time_value_per_share = data["strike"] * 0.03
-            elif moneyness < 1.0:
-                time_value_per_share = data["strike"] * 0.08
-            else:
-                time_value_per_share = data["strike"] * 0.10
-        else:
-            if intrinsic_per_share > 0:
-                time_value_per_share = data["strike"] * 0.02
-            else:
-                time_value_per_share = data["strike"] * 0.01
-
-        time_value = time_value_per_share * 100 * data["contracts"]
-        est_value = intrinsic_value + time_value
-
-        if intrinsic_per_share > 0:
-            delta = min(0.85, 0.5 + (intrinsic_per_share / data["strike"]) * 0.5)
-        else:
-            delta = max(0.15, 0.5 - abs(underlying_price - data["strike"]) / data["strike"] * 0.5)
+        est_value, delta = calc_option_value(underlying_price, data["strike"], data["expiry"], data["contracts"])
         option_day_gain = underlying_day_change * delta * 100 * data["contracts"]
 
         gain_loss = est_value - data["cost"]
-        return_pct = (gain_loss / data["cost"]) * 100
+        return_pct = (gain_loss / data["cost"]) * 100 if data["cost"] > 0 else 0
 
         total_option_cost += data["cost"]
         total_option_value += est_value
@@ -242,64 +309,217 @@ def generate_html(prices):
 
         itm_otm = "ITM" if underlying_price > data["strike"] else "OTM"
 
-        if gain_loss >= 0:
-            gainers.append((f"{symbol} Call", data["name"], gain_loss, return_pct))
-        else:
-            losers.append((f"{symbol} Call", data["name"], gain_loss, return_pct))
+        option_rows.append(f"""<tr>
+            <td class="ticker">{symbol}</td>
+            <td>{data["name"]}</td>
+            <td class="number">{data["contracts"]}</td>
+            <td class="number">${data["cost"]:,}</td>
+            <td class="number">${underlying_price:.2f} ({itm_otm})</td>
+            <td class="number {day_class}">{day_sign}${abs(option_day_gain):,.0f}</td>
+            <td class="number">${est_value:,.0f}</td>
+            <td class="number {gain_class}">{gain_sign}${gain_loss:,.0f}</td>
+            <td class="{gain_class} percent">{gain_sign}{return_pct:.2f}%</td>
+        </tr>""")
 
-        option_rows.append(f"""
-                <tr>
-                    <td class="ticker" data-value="{symbol}">{symbol}</td>
-                    <td data-value="{data["name"]}">{data["name"]}</td>
-                    <td class="number" data-value="{data["contracts"]}">{data["contracts"]}</td>
-                    <td data-value="{data["trade_date"]}">{data["trade_date"]}</td>
-                    <td data-value="{data["expiry"]}">{data["expiry"]}</td>
-                    <td class="number" data-value="{data["cost_price"]}">${data["cost_price"]:.2f}</td>
-                    <td class="number" data-value="{data["cost"]}">${data["cost"]:,}</td>
-                    <td class="number" data-value="{underlying_price}">${underlying_price:.2f} ({itm_otm})</td>
-                    <td class="number {day_class}" data-value="{underlying_day_change}">{'+' if underlying_day_change >= 0 else ''}${underlying_day_change:.2f}</td>
-                    <td class="number" data-value="{est_value}">${est_value:,.0f}</td>
-                    <td class="number {day_class}" data-value="{option_day_gain}">{day_sign}${abs(option_day_gain):,.0f}</td>
-                    <td class="number {gain_class}" data-value="{gain_loss}">{gain_sign}${gain_loss:,.0f}</td>
-                    <td class="{gain_class} percent" data-value="{return_pct}">{gain_sign}{return_pct:.2f}%</td>
-                </tr>""")
+    # T-Bills
+    tbill_rows = []
+    total_tbill_value = 0
+    for symbol, data in portfolio.get("tbills", {}).items():
+        # T-bills trade near par, assume ~$100 per $100 face
+        current_value = data["qty"] * 0.998  # Slight discount
+        total_tbill_value += current_value
+        gain_loss = current_value - data["cost"]
+        return_pct = (gain_loss / data["cost"]) * 100 if data["cost"] > 0 else 0
+        gain_class = "positive" if gain_loss >= 0 else "negative"
+        gain_sign = "+" if gain_loss >= 0 else ""
 
+        tbill_rows.append(f"""<tr>
+            <td class="ticker">{symbol}</td>
+            <td>{data["name"]}</td>
+            <td class="number">{data["qty"]:,}</td>
+            <td class="number">${data["cost"]:,}</td>
+            <td class="number">${current_value:,.0f}</td>
+            <td class="number {gain_class}">{gain_sign}${gain_loss:,.0f}</td>
+            <td class="{gain_class} percent">{gain_sign}{return_pct:.2f}%</td>
+        </tr>""")
+
+    # Totals
+    total_cash = sum(portfolio["cash"].values())
     stock_gain = total_stock_value - total_stock_cost
-    stock_return = (stock_gain / total_stock_cost * 100) if total_stock_cost > 0 else 0
     option_gain = total_option_value - total_option_cost
-    option_return = (option_gain / total_option_cost * 100) if total_option_cost > 0 else 0
-
-    total_cash = sum(CASH.values())
-    total_portfolio = total_stock_value + total_option_value + total_cash
-    total_investment_cost = total_stock_cost + total_option_cost
+    total_investment = total_stock_cost + total_option_cost
+    total_value = total_stock_value + total_option_value + total_tbill_value + total_cash
+    total_day = total_day_gain + total_option_day_gain
     net_gain = stock_gain + option_gain
-    net_return = (net_gain / total_investment_cost * 100) if total_investment_cost > 0 else 0
+    net_return = (net_gain / total_investment * 100) if total_investment > 0 else 0
 
+    day_class = "positive" if total_day >= 0 else "negative"
+    gain_class = "positive" if net_gain >= 0 else "negative"
     stock_gain_class = "positive" if stock_gain >= 0 else "negative"
-    option_gain_class = "positive" if option_gain >= 0 else "negative"
-    net_gain_class = "positive" if net_gain >= 0 else "negative"
 
-    gainers.sort(key=lambda x: x[2], reverse=True)
-    losers.sort(key=lambda x: x[2])
+    # Build HTML sections
+    stocks_table = ""
+    if stock_rows:
+        stocks_table = f"""
+        <h3 class="section-title">Equities</h3>
+        <div class="table-container">
+        <table class="sortable">
+            <thead><tr>
+                <th>Symbol</th><th>Name</th><th>Qty</th><th>Cost</th><th>Price</th><th>Day %</th><th>Value</th><th>Day $</th><th>Gain/Loss</th><th>Return</th>
+            </tr></thead>
+            <tbody>{''.join(stock_rows)}</tbody>
+            <tfoot><tr style="background: rgba(0,212,255,0.1); font-weight: bold;">
+                <td colspan="3">Total Equities</td>
+                <td class="number">${total_stock_cost:,}</td>
+                <td colspan="2"></td>
+                <td class="number">${total_stock_value:,.0f}</td>
+                <td class="number {day_class}">{'+' if total_day_gain >= 0 else ''}${total_day_gain:,.0f}</td>
+                <td class="number {stock_gain_class}">{'+' if stock_gain >= 0 else ''}${stock_gain:,.0f}</td>
+                <td></td>
+            </tr></tfoot>
+        </table>
+        </div>"""
 
-    gainer_rows = ""
-    for sym, name, gl, ret in gainers[:5]:
-        gainer_rows += f'<tr><td class="ticker">{sym}</td><td>{name}</td><td class="number positive">+${gl:,.0f}</td><td class="positive">+{ret:.2f}%</td></tr>\n'
+    options_table = ""
+    if option_rows:
+        option_gain_class = "positive" if option_gain >= 0 else "negative"
+        options_table = f"""
+        <h3 class="section-title">Options</h3>
+        <div class="table-container">
+        <table class="sortable">
+            <thead><tr>
+                <th>Symbol</th><th>Description</th><th>Contracts</th><th>Cost</th><th>Underlying</th><th>Day $</th><th>Est Value</th><th>Gain/Loss</th><th>Return</th>
+            </tr></thead>
+            <tbody>{''.join(option_rows)}</tbody>
+            <tfoot><tr style="background: rgba(0,212,255,0.1); font-weight: bold;">
+                <td colspan="3">Total Options</td>
+                <td class="number">${total_option_cost:,}</td>
+                <td colspan="2"></td>
+                <td class="number">${total_option_value:,.0f}</td>
+                <td class="number {option_gain_class}">{'+' if option_gain >= 0 else ''}${option_gain:,.0f}</td>
+                <td></td>
+            </tr></tfoot>
+        </table>
+        </div>"""
 
-    loser_rows = ""
-    for sym, name, gl, ret in losers[:5]:
-        loser_rows += f'<tr><td class="ticker">{sym}</td><td>{name}</td><td class="number negative">${gl:,.0f}</td><td class="negative">{ret:.2f}%</td></tr>\n'
+    tbills_table = ""
+    if tbill_rows:
+        tbills_table = f"""
+        <h3 class="section-title">Fixed Income</h3>
+        <div class="table-container">
+        <table>
+            <thead><tr>
+                <th>Symbol</th><th>Name</th><th>Face Value</th><th>Cost</th><th>Value</th><th>Gain/Loss</th><th>Return</th>
+            </tr></thead>
+            <tbody>{''.join(tbill_rows)}</tbody>
+            <tfoot><tr style="background: rgba(0,212,255,0.1); font-weight: bold;">
+                <td colspan="4">Total Fixed Income</td>
+                <td class="number">${total_tbill_value:,.0f}</td>
+                <td colspan="2"></td>
+            </tr></tfoot>
+        </table>
+        </div>"""
 
-    total_all_day_gain = total_day_gain + total_option_day_gain
-    day_gain_class = "positive" if total_all_day_gain >= 0 else "negative"
-    day_pct = (total_all_day_gain / (total_portfolio - total_all_day_gain) * 100) if total_portfolio > 0 else 0
+    cash_section = f"""
+        <h3 class="section-title">Cash</h3>
+        <table style="max-width: 400px;">
+            <thead><tr><th>Currency</th><th>Amount</th></tr></thead>
+            <tbody>"""
+    for curr, amt in portfolio["cash"].items():
+        cash_class = "negative" if amt < 0 else ""
+        cash_section += f'<tr><td class="ticker">{curr}</td><td class="number {cash_class}">${amt:,}</td></tr>'
+    cash_section += f"""</tbody>
+            <tfoot><tr style="background: rgba(0,212,255,0.1); font-weight: bold;">
+                <td>Total Cash</td><td class="number {'negative' if total_cash < 0 else ''}">${total_cash:,}</td>
+            </tr></tfoot>
+        </table>"""
+
+    return f"""
+    <div class="portfolio-content" id="{portfolio_id}" style="display: none;">
+        <div class="summary-cards">
+            <div class="card">
+                <h3>Total Value</h3>
+                <div class="value neutral number">${total_value:,.0f}</div>
+            </div>
+            <div class="card">
+                <h3>Today's Change</h3>
+                <div class="value {day_class} number">{'+' if total_day >= 0 else ''}${total_day:,.0f}</div>
+            </div>
+            <div class="card">
+                <h3>Total Cost</h3>
+                <div class="value neutral number">${total_investment:,}</div>
+            </div>
+            <div class="card">
+                <h3>Total Gain/Loss</h3>
+                <div class="value {gain_class} number">{'+' if net_gain >= 0 else ''}${net_gain:,.0f}</div>
+            </div>
+            <div class="card">
+                <h3>Total Return</h3>
+                <div class="value {gain_class} number">{'+' if net_return >= 0 else ''}{net_return:.2f}%</div>
+            </div>
+        </div>
+        {stocks_table}
+        {options_table}
+        {tbills_table}
+        {cash_section}
+    </div>"""
+
+def generate_html(prices):
+    today = datetime.now().strftime("%B %d, %Y")
+    update_time = datetime.now().strftime("%I:%M %p")
+
+    # Generate tab buttons
+    tabs_html = ""
+    for pid, p in PORTFOLIOS.items():
+        tabs_html += f'<button class="tab-btn" data-portfolio="{pid}">{p["name"]}</button>'
+
+    # Generate all portfolio contents
+    portfolios_html = ""
+    for pid, p in PORTFOLIOS.items():
+        portfolios_html += generate_portfolio_html(pid, p, prices)
+
+    # Calculate grand totals for overview
+    grand_total = 0
+    grand_day_change = 0
+    for pid, p in PORTFOLIOS.items():
+        cash = sum(p["cash"].values())
+        stock_val = 0
+        stock_day = 0
+        for sym, data in p["holdings"].items():
+            if data["qty"] == 0:
+                continue
+            pd = prices.get(sym)
+            if pd:
+                if data.get("currency") == "EUR":
+                    stock_val += data["qty"] * pd["price"] * data.get("fx_rate", 1)
+                    stock_day += data["qty"] * pd["day_change"] * data.get("fx_rate", 1)
+                else:
+                    stock_val += data["qty"] * pd["price"]
+                    stock_day += data["qty"] * pd["day_change"]
+        for sym, data in p.get("foreign", {}).items():
+            pd = prices.get(sym)
+            if pd:
+                stock_val += (data["qty"] * pd["price"]) / data["fx_rate"]
+                stock_day += (data["qty"] * pd["day_change"]) / data["fx_rate"]
+        for sym, data in p.get("options", {}).items():
+            pd = prices.get(sym)
+            if pd:
+                est_val, delta = calc_option_value(pd["price"], data["strike"], data["expiry"], data["contracts"])
+                stock_val += est_val
+                stock_day += pd["day_change"] * delta * 100 * data["contracts"]
+        for sym, data in p.get("tbills", {}).items():
+            stock_val += data["qty"] * 0.998
+        grand_total += stock_val + cash
+        grand_day_change += stock_day
+
+    grand_day_class = "positive" if grand_day_change >= 0 else "negative"
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio Analysis - Annabay</title>
+    <title>Portfolio Analysis</title>
     <style>
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
         body {{
@@ -310,90 +530,121 @@ def generate_html(prices):
             color: #e0e0e0;
         }}
         .container {{ max-width: 1600px; margin: 0 auto; }}
-        h1 {{ text-align: center; color: #00d4ff; margin-bottom: 10px; font-size: 2.5em; }}
-        .update-time {{ text-align: center; color: #00ff88; margin-bottom: 30px; font-size: 0.9em; }}
-        .summary-cards {{
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }}
-        .card {{
-            background: rgba(255,255,255,0.05);
-            border-radius: 15px;
-            padding: 25px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }}
-        .card h3 {{ color: #888; font-size: 0.9em; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }}
-        .card .value {{ font-size: 1.8em; font-weight: bold; }}
-        .card .value.positive {{ color: #00ff88; }}
-        .card .value.negative {{ color: #ff4757; }}
-        .card .value.neutral {{ color: #00d4ff; }}
-        .table-container {{ overflow-x: auto; }}
-        table {{
-            width: 100%;
-            border-collapse: collapse;
-            background: rgba(255,255,255,0.03);
-            border-radius: 15px;
-            overflow: hidden;
-            margin-bottom: 30px;
-            min-width: 1200px;
-        }}
-        th, td {{ padding: 12px 10px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }}
-        th {{
-            background: rgba(0,212,255,0.1);
-            color: #00d4ff;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.75em;
-            cursor: pointer;
-            user-select: none;
-            white-space: nowrap;
-            position: relative;
-        }}
-        th:hover {{ background: rgba(0,212,255,0.2); }}
-        th.sorted-asc::after {{ content: ' ▲'; font-size: 0.8em; }}
-        th.sorted-desc::after {{ content: ' ▼'; font-size: 0.8em; }}
-        tr:hover {{ background: rgba(255,255,255,0.05); }}
-        .positive {{ color: #00ff88; }}
-        .negative {{ color: #ff4757; }}
-        .ticker {{ font-weight: bold; color: #00d4ff; }}
-        .section-title {{
-            color: #00d4ff;
-            margin: 30px 0 15px 0;
-            font-size: 1.5em;
-            border-bottom: 2px solid rgba(0,212,255,0.3);
-            padding-bottom: 10px;
-        }}
-        .number {{ font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 0.9em; }}
-        .date-info {{ text-align: center; color: #666; font-size: 0.9em; margin-top: 20px; }}
-        .percent {{ font-size: 0.85em; }}
-        .update-btn {{
-            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
-            border: none;
-            color: #1a1a2e;
-            padding: 12px 30px;
-            font-size: 1em;
-            font-weight: bold;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }}
-        .update-btn:hover {{
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
-        }}
+        h1 {{ text-align: center; color: #00d4ff; margin-bottom: 10px; font-size: 2.2em; }}
         .header-row {{
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 20px;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
         }}
+        .update-time {{ color: #00ff88; font-size: 0.9em; }}
+        .update-btn {{
+            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+            border: none;
+            color: #1a1a2e;
+            padding: 10px 25px;
+            font-size: 0.9em;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }}
+        .update-btn:hover {{ transform: scale(1.05); box-shadow: 0 0 15px rgba(0, 212, 255, 0.5); }}
+
+        .grand-total {{
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+        }}
+        .grand-total .label {{ color: #888; font-size: 0.9em; }}
+        .grand-total .amount {{ font-size: 2em; color: #00d4ff; font-weight: bold; font-family: 'SF Mono', Monaco, monospace; }}
+        .grand-total .day-change {{ font-size: 1em; margin-left: 15px; }}
+
+        .tabs {{
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }}
+        .tab-btn {{
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(0,212,255,0.3);
+            color: #e0e0e0;
+            padding: 12px 30px;
+            font-size: 1em;
+            font-weight: 600;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }}
+        .tab-btn:hover {{ background: rgba(0,212,255,0.1); border-color: #00d4ff; }}
+        .tab-btn.active {{
+            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+            color: #1a1a2e;
+            border-color: #00d4ff;
+        }}
+
+        .summary-cards {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }}
+        .card {{
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }}
+        .card h3 {{ color: #888; font-size: 0.8em; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }}
+        .card .value {{ font-size: 1.5em; font-weight: bold; }}
+        .card .value.positive {{ color: #00ff88; }}
+        .card .value.negative {{ color: #ff4757; }}
+        .card .value.neutral {{ color: #00d4ff; }}
+
+        .section-title {{
+            color: #00d4ff;
+            margin: 25px 0 12px 0;
+            font-size: 1.2em;
+            border-bottom: 2px solid rgba(0,212,255,0.3);
+            padding-bottom: 8px;
+        }}
+        .table-container {{ overflow-x: auto; }}
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }}
+        th, td {{ padding: 10px 8px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }}
+        th {{
+            background: rgba(0,212,255,0.1);
+            color: #00d4ff;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.7em;
+            white-space: nowrap;
+        }}
+        tr:hover {{ background: rgba(255,255,255,0.05); }}
+        .positive {{ color: #00ff88; }}
+        .negative {{ color: #ff4757; }}
+        .ticker {{ font-weight: bold; color: #00d4ff; }}
+        .number {{ font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 0.85em; }}
+        .percent {{ font-size: 0.8em; }}
+
+        .date-info {{ text-align: center; color: #666; font-size: 0.85em; margin-top: 25px; }}
+
         @media (max-width: 768px) {{
-            th, td {{ padding: 8px 5px; font-size: 0.75em; }}
-            h1 {{ font-size: 1.8em; }}
+            th, td {{ padding: 6px 4px; font-size: 0.7em; }}
+            h1 {{ font-size: 1.6em; }}
+            .tab-btn {{ padding: 8px 15px; font-size: 0.85em; }}
         }}
     </style>
 </head>
@@ -401,184 +652,50 @@ def generate_html(prices):
     <div class="container">
         <h1>Portfolio Analysis</h1>
         <div class="header-row">
-            <p class="update-time" style="margin: 0;">Last Updated: {today} at {update_time}</p>
+            <span class="update-time">Last Updated: {today} at {update_time}</span>
             <button class="update-btn" onclick="updatePrices()">Update Prices</button>
         </div>
 
-        <div class="summary-cards">
-            <div class="card">
-                <h3>Total Portfolio Value</h3>
-                <div class="value neutral number">${total_portfolio:,.0f}</div>
-            </div>
-            <div class="card">
-                <h3>Today's Gain/Loss</h3>
-                <div class="value {day_gain_class} number">{'+' if total_all_day_gain >= 0 else ''}${total_all_day_gain:,.0f} <span style="font-size: 0.6em;">({'+' if day_pct >= 0 else ''}{day_pct:.2f}%)</span></div>
-            </div>
-            <div class="card">
-                <h3>Total Investment Cost</h3>
-                <div class="value neutral number">${total_investment_cost:,}</div>
-            </div>
-            <div class="card">
-                <h3>Total Gain/Loss</h3>
-                <div class="value {net_gain_class} number">{'+' if net_gain >= 0 else ''}${net_gain:,.0f}</div>
-            </div>
-            <div class="card">
-                <h3>Total Return</h3>
-                <div class="value {net_gain_class} number">{'+' if net_return >= 0 else ''}{net_return:.2f}%</div>
-            </div>
+        <div class="grand-total">
+            <span class="label">COMBINED PORTFOLIO VALUE</span><br>
+            <span class="amount">${grand_total:,.0f}</span>
+            <span class="day-change {grand_day_class}">{'+' if grand_day_change >= 0 else ''}${grand_day_change:,.0f} today</span>
         </div>
 
-        <h2 class="section-title">Stocks & Similar Instruments</h2>
-        <div class="table-container">
-        <table id="stocks-table" class="sortable">
-            <thead>
-                <tr>
-                    <th data-col="0">Symbol</th>
-                    <th data-col="1">Security</th>
-                    <th data-col="2">Qty</th>
-                    <th data-col="3">Purchase Date</th>
-                    <th data-col="4">Buy Price</th>
-                    <th data-col="5">Cost</th>
-                    <th data-col="6">Price</th>
-                    <th data-col="7">Day Chg</th>
-                    <th data-col="8">Day %</th>
-                    <th data-col="9">Value</th>
-                    <th data-col="10">Day Gain</th>
-                    <th data-col="11">Gain/Loss</th>
-                    <th data-col="12">Return %</th>
-                </tr>
-            </thead>
-            <tbody>
-                {''.join(stock_rows)}
-            </tbody>
-            <tfoot>
-                <tr style="background: rgba(0,212,255,0.1); font-weight: bold;">
-                    <td colspan="5">TOTAL STOCKS</td>
-                    <td class="number">${total_stock_cost:,}</td>
-                    <td colspan="3"></td>
-                    <td class="number">${total_stock_value:,.0f}</td>
-                    <td class="number {day_gain_class}">{'+' if total_day_gain >= 0 else ''}${total_day_gain:,.0f}</td>
-                    <td class="number {stock_gain_class}">{'+' if stock_gain >= 0 else ''}${stock_gain:,.0f}</td>
-                    <td class="{stock_gain_class} percent">{'+' if stock_return >= 0 else ''}{stock_return:.2f}%</td>
-                </tr>
-            </tfoot>
-        </table>
+        <div class="tabs">
+            {tabs_html}
         </div>
 
-        <h2 class="section-title">Options (Derivatives)</h2>
-        <div class="table-container">
-        <table id="options-table" class="sortable">
-            <thead>
-                <tr>
-                    <th data-col="0">Symbol</th>
-                    <th data-col="1">Description</th>
-                    <th data-col="2">Contracts</th>
-                    <th data-col="3">Trade Date</th>
-                    <th data-col="4">Expiry</th>
-                    <th data-col="5">Cost Price</th>
-                    <th data-col="6">Cost</th>
-                    <th data-col="7">Underlying</th>
-                    <th data-col="8">Day Chg</th>
-                    <th data-col="9">Est. Value</th>
-                    <th data-col="10">Day Gain</th>
-                    <th data-col="11">Gain/Loss</th>
-                    <th data-col="12">Return %</th>
-                </tr>
-            </thead>
-            <tbody>
-                {''.join(option_rows)}
-            </tbody>
-            <tfoot>
-                <tr style="background: rgba(0,212,255,0.1); font-weight: bold;">
-                    <td colspan="6">TOTAL OPTIONS</td>
-                    <td class="number">${total_option_cost:,}</td>
-                    <td colspan="2"></td>
-                    <td class="number">${total_option_value:,.0f}</td>
-                    <td class="number {day_gain_class}">{'+' if total_option_day_gain >= 0 else ''}${total_option_day_gain:,.0f}</td>
-                    <td class="number {option_gain_class}">{'+' if option_gain >= 0 else ''}${option_gain:,.0f}</td>
-                    <td class="{option_gain_class} percent">{'+' if option_return >= 0 else ''}{option_return:.2f}%</td>
-                </tr>
-            </tfoot>
-        </table>
-        </div>
-
-        <h2 class="section-title">Cash Holdings</h2>
-        <table>
-            <thead>
-                <tr><th>Currency</th><th>Value (USD)</th></tr>
-            </thead>
-            <tbody>
-                <tr><td class="ticker">USD</td><td class="number">${CASH['USD']:,}</td></tr>
-                <tr><td class="ticker">EUR</td><td class="number">${CASH['EUR']:,}</td></tr>
-            </tbody>
-            <tfoot>
-                <tr style="background: rgba(0,212,255,0.1); font-weight: bold;">
-                    <td>TOTAL CASH</td>
-                    <td class="number">${total_cash:,}</td>
-                </tr>
-            </tfoot>
-        </table>
-
-        <h2 class="section-title">Top Gainers</h2>
-        <table>
-            <thead><tr><th>Symbol</th><th>Security</th><th>Gain/Loss</th><th>Return %</th></tr></thead>
-            <tbody>{gainer_rows}</tbody>
-        </table>
-
-        <h2 class="section-title">Top Losers</h2>
-        <table>
-            <thead><tr><th>Symbol</th><th>Security</th><th>Gain/Loss</th><th>Return %</th></tr></thead>
-            <tbody>{loser_rows}</tbody>
-        </table>
+        {portfolios_html}
 
         <p class="date-info">
-            <strong>Prices Updated:</strong> {today} at {update_time}<br>
-            <em>Data from Yahoo Finance. Options estimated using intrinsic value + time value. Click column headers to sort.</em>
+            Data from Yahoo Finance. Options estimated using intrinsic + time value.<br>
+            Prices updated: {today} at {update_time}
         </p>
     </div>
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {{
-        document.querySelectorAll('table.sortable').forEach(function(table) {{
-            const headers = table.querySelectorAll('th[data-col]');
-            let currentSort = {{ col: null, asc: true }};
+        const tabs = document.querySelectorAll('.tab-btn');
+        const contents = document.querySelectorAll('.portfolio-content');
 
-            headers.forEach(function(header) {{
-                header.addEventListener('click', function() {{
-                    const col = parseInt(this.getAttribute('data-col'));
-                    const tbody = table.querySelector('tbody');
-                    const rows = Array.from(tbody.querySelectorAll('tr'));
+        function showPortfolio(id) {{
+            contents.forEach(c => c.style.display = 'none');
+            tabs.forEach(t => t.classList.remove('active'));
+            document.getElementById(id).style.display = 'block';
+            document.querySelector('[data-portfolio="' + id + '"]').classList.add('active');
+        }}
 
-                    if (currentSort.col === col) {{
-                        currentSort.asc = !currentSort.asc;
-                    }} else {{
-                        currentSort.col = col;
-                        currentSort.asc = true;
-                    }}
-
-                    headers.forEach(h => h.classList.remove('sorted-asc', 'sorted-desc'));
-                    this.classList.add(currentSort.asc ? 'sorted-asc' : 'sorted-desc');
-
-                    rows.sort(function(a, b) {{
-                        const aCell = a.cells[col];
-                        const bCell = b.cells[col];
-                        let aVal = aCell.getAttribute('data-value') || aCell.textContent.trim();
-                        let bVal = bCell.getAttribute('data-value') || bCell.textContent.trim();
-
-                        const aNum = parseFloat(aVal.replace(/[,$%]/g, ''));
-                        const bNum = parseFloat(bVal.replace(/[,$%]/g, ''));
-
-                        if (!isNaN(aNum) && !isNaN(bNum)) {{
-                            return currentSort.asc ? aNum - bNum : bNum - aNum;
-                        }}
-                        return currentSort.asc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
-                    }});
-
-                    rows.forEach(row => tbody.appendChild(row));
-                }});
+        tabs.forEach(tab => {{
+            tab.addEventListener('click', function() {{
+                showPortfolio(this.getAttribute('data-portfolio'));
             }});
         }});
+
+        // Show first portfolio by default
+        showPortfolio('annabay');
     }});
+
     function updatePrices() {{
         const btn = document.querySelector('.update-btn');
         btn.textContent = 'Updating...';
