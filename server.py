@@ -445,7 +445,8 @@ def generate_portfolio_html(portfolio_id, portfolio, prices):
         </table>"""
 
     return f"""
-    <div class="portfolio-content" id="{portfolio_id}" style="display: none;">
+    <div class="portfolio-content" id="{portfolio_id}" style="display: none;"
+         data-total="{total_value:.0f}" data-day="{total_day:.0f}">
         <div class="summary-cards">
             <div class="card">
                 <h3>Total Value</h3>
@@ -488,42 +489,6 @@ def generate_html(prices):
     for pid, p in PORTFOLIOS.items():
         portfolios_html += generate_portfolio_html(pid, p, prices)
 
-    # Calculate grand totals for overview
-    grand_total = 0
-    grand_day_change = 0
-    for pid, p in PORTFOLIOS.items():
-        cash = sum(p["cash"].values())
-        stock_val = 0
-        stock_day = 0
-        for sym, data in p["holdings"].items():
-            if data["qty"] == 0:
-                continue
-            pd = prices.get(sym)
-            if pd:
-                if data.get("currency") == "EUR":
-                    stock_val += data["qty"] * pd["price"] * data.get("fx_rate", 1)
-                    stock_day += data["qty"] * pd["day_change"] * data.get("fx_rate", 1)
-                else:
-                    stock_val += data["qty"] * pd["price"]
-                    stock_day += data["qty"] * pd["day_change"]
-        for sym, data in p.get("foreign", {}).items():
-            pd = prices.get(sym)
-            if pd:
-                stock_val += (data["qty"] * pd["price"]) / data["fx_rate"]
-                stock_day += (data["qty"] * pd["day_change"]) / data["fx_rate"]
-        for sym, data in p.get("options", {}).items():
-            pd = prices.get(sym)
-            if pd:
-                est_val, delta = calc_option_value(pd["price"], data["strike"], data["expiry"], data["contracts"])
-                stock_val += est_val
-                stock_day += pd["day_change"] * delta * 100 * data["contracts"]
-        for sym, data in p.get("tbills", {}).items():
-            stock_val += data["qty"] * 0.998
-        grand_total += stock_val + cash
-        grand_day_change += stock_day
-
-    grand_day_class = "positive" if grand_day_change >= 0 else "negative"
-
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -563,16 +528,16 @@ def generate_html(prices):
         }}
         .update-btn:hover {{ transform: scale(1.05); box-shadow: 0 0 15px rgba(0, 212, 255, 0.5); }}
 
-        .grand-total {{
+        .portfolio-header {{
             text-align: center;
             margin-bottom: 20px;
             padding: 15px;
             background: rgba(255,255,255,0.05);
             border-radius: 10px;
         }}
-        .grand-total .label {{ color: #888; font-size: 0.9em; }}
-        .grand-total .amount {{ font-size: 2em; color: #00d4ff; font-weight: bold; font-family: 'SF Mono', Monaco, monospace; }}
-        .grand-total .day-change {{ font-size: 1em; margin-left: 15px; }}
+        .portfolio-header .label {{ color: #888; font-size: 0.9em; }}
+        .portfolio-header .amount {{ font-size: 2em; color: #00d4ff; font-weight: bold; font-family: 'SF Mono', Monaco, monospace; }}
+        .portfolio-header .day-change {{ font-size: 1em; margin-left: 15px; }}
 
         .tabs {{
             display: flex;
@@ -666,10 +631,10 @@ def generate_html(prices):
             <button class="update-btn" onclick="updatePrices()">Update Prices</button>
         </div>
 
-        <div class="grand-total">
-            <span class="label">COMBINED PORTFOLIO VALUE</span><br>
-            <span class="amount">${grand_total:,.0f}</span>
-            <span class="day-change {grand_day_class}">{'+' if grand_day_change >= 0 else ''}${grand_day_change:,.0f} today</span>
+        <div class="portfolio-header">
+            <span class="label">PORTFOLIO VALUE</span><br>
+            <span class="amount" id="header-total">$0</span>
+            <span class="day-change" id="header-day">$0 today</span>
         </div>
 
         <div class="tabs">
@@ -689,11 +654,25 @@ def generate_html(prices):
         const tabs = document.querySelectorAll('.tab-btn');
         const contents = document.querySelectorAll('.portfolio-content');
 
+        function formatNumber(num) {{
+            return num.toLocaleString('en-US');
+        }}
+
         function showPortfolio(id) {{
             contents.forEach(c => c.style.display = 'none');
             tabs.forEach(t => t.classList.remove('active'));
-            document.getElementById(id).style.display = 'block';
+            const el = document.getElementById(id);
+            el.style.display = 'block';
             document.querySelector('[data-portfolio="' + id + '"]').classList.add('active');
+
+            // Update header with this portfolio's totals
+            const total = parseFloat(el.dataset.total);
+            const day = parseFloat(el.dataset.day);
+            document.getElementById('header-total').textContent = '$' + formatNumber(Math.round(total));
+            const dayEl = document.getElementById('header-day');
+            const sign = day >= 0 ? '+' : '';
+            dayEl.textContent = sign + '$' + formatNumber(Math.round(Math.abs(day))) + ' today';
+            dayEl.className = 'day-change ' + (day >= 0 ? 'positive' : 'negative');
         }}
 
         tabs.forEach(tab => {{
