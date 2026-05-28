@@ -67,13 +67,13 @@ SCHWAB2_CASH = {"USD": 332402}
 
 # ============== PORTFOLIO 4: MORGAN STANLEY ==============
 MS_HOLDINGS = {
-    "MSFT": {"name": "Microsoft Corp", "qty": 700, "cost": 78555},
+    "MSFT": {"name": "Microsoft Corp", "qty": 500, "cost": 78555},
     "AMZN": {"name": "Amazon.com Inc", "qty": 700, "cost": 76510},
-    "VAL": {"name": "Valaris Ltd", "qty": 1800000, "cost": 55800},  # 1.8M qty from screenshot
-    "NE": {"name": "Noble Corp", "qty": 3000000, "cost": 59190},  # 3M qty from screenshot
-    "SNAP": {"name": "Snap Inc", "qty": 20000000, "cost": 99230},  # 20M qty from screenshot
-    "LMGIF": {"name": "Lumine Group Inc", "qty": 1501000, "cost": 21888},
-    "AAL": {"name": "American Airlines", "qty": 2000, "cost": 36},
+    "VAL": {"name": "Valaris Ltd", "qty": 1800, "cost": 55800},
+    "NE": {"name": "Noble Corp", "qty": 3000, "cost": 59190},
+    "SNAP": {"name": "Snap Inc", "qty": 20000, "cost": 99230},
+    "LMGIF": {"name": "Lumine Group Inc", "qty": 1501, "cost": 21888},
+    "AAL": {"name": "American Airlines", "qty": 2, "cost": 36},
 }
 # Note: PSTH and ESC Pershing Square are not publicly traded
 MS_CASH = {"USD": 2135}
