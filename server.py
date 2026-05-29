@@ -476,8 +476,12 @@ def generate_portfolio_html(portfolio_id, portfolio, prices):
     </div>"""
 
 def generate_html(prices):
-    today = datetime.now().strftime("%B %d, %Y")
-    update_time = datetime.now().strftime("%I:%M %p")
+    # Use Eastern time for display
+    from datetime import timezone, timedelta
+    eastern = timezone(timedelta(hours=-4))  # EDT (summer)
+    now_et = datetime.now(eastern)
+    today = now_et.strftime("%B %d, %Y")
+    update_time = now_et.strftime("%I:%M %p")
 
     # Generate tab buttons
     tabs_html = ""
