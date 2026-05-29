@@ -370,6 +370,7 @@ def generate_portfolio_html(portfolio_id, portfolio, prices):
     # Build HTML sections
     stocks_table = ""
     if stock_rows:
+        stock_return_pct = (stock_gain / total_stock_cost * 100) if total_stock_cost > 0 else 0
         stocks_table = f"""
         <h3 class="section-title">Equities</h3>
         <div class="table-container">
@@ -385,7 +386,7 @@ def generate_portfolio_html(portfolio_id, portfolio, prices):
                 <td class="number">${total_stock_value:,.0f}</td>
                 <td class="number {day_class}">{'+' if total_day_gain >= 0 else ''}${total_day_gain:,.0f}</td>
                 <td class="number {stock_gain_class}">{'+' if stock_gain >= 0 else ''}${stock_gain:,.0f}</td>
-                <td></td>
+                <td class="{stock_gain_class} percent">{'+' if stock_return_pct >= 0 else ''}{stock_return_pct:.2f}%</td>
             </tr></tfoot>
         </table>
         </div>"""
