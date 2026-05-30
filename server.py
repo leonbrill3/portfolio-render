@@ -376,7 +376,7 @@ def generate_portfolio_html(portfolio_id, portfolio, prices):
         <div class="table-container">
         <table class="sortable">
             <thead><tr>
-                <th>Symbol</th><th>Name</th><th>Qty</th><th>Cost</th><th>Price</th><th>Day %</th><th>Value</th><th>Day $</th><th>Gain/Loss</th><th>Return</th>
+                <th class="sortable" data-type="string">Symbol</th><th class="sortable" data-type="string">Name</th><th class="sortable" data-type="number">Qty</th><th class="sortable" data-type="number">Cost</th><th class="sortable" data-type="number">Price</th><th class="sortable" data-type="number">Day %</th><th class="sortable" data-type="number">Value</th><th class="sortable" data-type="number">Day $</th><th class="sortable" data-type="number">Gain/Loss</th><th class="sortable" data-type="number">Return</th>
             </tr></thead>
             <tbody>{''.join(stock_rows)}</tbody>
             <tfoot><tr style="background: rgba(0,212,255,0.1); font-weight: bold;">
@@ -399,7 +399,7 @@ def generate_portfolio_html(portfolio_id, portfolio, prices):
         <div class="table-container">
         <table class="sortable">
             <thead><tr>
-                <th>Symbol</th><th>Description</th><th>Contracts</th><th>Cost</th><th>Underlying</th><th>Day $</th><th>Est Value</th><th>Gain/Loss</th><th>Return</th>
+                <th class="sortable" data-type="string">Symbol</th><th class="sortable" data-type="string">Description</th><th class="sortable" data-type="number">Contracts</th><th class="sortable" data-type="number">Cost</th><th class="sortable" data-type="number">Underlying</th><th class="sortable" data-type="number">Day $</th><th class="sortable" data-type="number">Est Value</th><th class="sortable" data-type="number">Gain/Loss</th><th class="sortable" data-type="number">Return</th>
             </tr></thead>
             <tbody>{''.join(option_rows)}</tbody>
             <tfoot><tr style="background: rgba(0,212,255,0.1); font-weight: bold;">
@@ -619,6 +619,12 @@ def generate_html(prices):
         .number {{ font-family: 'SF Mono', Monaco, Consolas, monospace; font-size: 0.85em; }}
         .percent {{ font-size: 0.8em; }}
 
+        th.sortable {{ cursor: pointer; user-select: none; }}
+        th.sortable:hover {{ background: rgba(0,212,255,0.2); }}
+        th.sortable::after {{ content: ' ⇅'; opacity: 0.3; font-size: 0.8em; }}
+        th.sortable.asc::after {{ content: ' ↑'; opacity: 1; }}
+        th.sortable.desc::after {{ content: ' ↓'; opacity: 1; }}
+
         .date-info {{ text-align: center; color: #666; font-size: 0.85em; margin-top: 25px; }}
 
         @media (max-width: 768px) {{
@@ -702,6 +708,40 @@ def generate_html(prices):
                 btn.disabled = false;
             }});
     }}
+
+    // Table sorting
+    document.querySelectorAll('th.sortable').forEach(th => {{
+        th.addEventListener('click', function() {{
+            const table = this.closest('table');
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            const colIndex = Array.from(this.parentNode.children).indexOf(this);
+            const type = this.dataset.type;
+            const isAsc = this.classList.contains('asc');
+
+            // Clear other sort indicators in this table
+            this.parentNode.querySelectorAll('th').forEach(h => h.classList.remove('asc', 'desc'));
+
+            // Set new sort direction
+            this.classList.add(isAsc ? 'desc' : 'asc');
+
+            rows.sort((a, b) => {{
+                let aVal = a.children[colIndex].textContent.trim();
+                let bVal = b.children[colIndex].textContent.trim();
+
+                if (type === 'number') {{
+                    // Extract numbers, handling $, %, +, -, commas
+                    aVal = parseFloat(aVal.replace(/[$,%+,]/g, '')) || 0;
+                    bVal = parseFloat(bVal.replace(/[$,%+,]/g, '')) || 0;
+                    return isAsc ? bVal - aVal : aVal - bVal;
+                }} else {{
+                    return isAsc ? bVal.localeCompare(aVal) : aVal.localeCompare(bVal);
+                }}
+            }});
+
+            rows.forEach(row => tbody.appendChild(row));
+        }});
+    }});
     </script>
 </body>
 </html>"""
