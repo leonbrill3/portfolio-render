@@ -63,7 +63,7 @@ SCHWAB2_TBILLS = {
     "912797TD9": {"name": "US Treasury Bill 26U", "qty": 500000, "cost": 498661},
     "912797TF4": {"name": "US Treasury Bill 26U", "qty": 500000, "cost": 497964},
 }
-SCHWAB2_CASH = {"USD": 332402}
+SCHWAB2_CASH = {"USD": 312402}
 
 # ============== PORTFOLIO 4: MORGAN STANLEY ==============
 MS_HOLDINGS = {
@@ -692,14 +692,20 @@ def generate_html(prices):
             }});
         }});
 
-        // Show first portfolio by default
-        showPortfolio('annabay');
+        // Show saved tab or first portfolio by default
+        const savedTab = localStorage.getItem('activePortfolio') || 'annabay';
+        showPortfolio(savedTab);
     }});
 
     function updatePrices() {{
         const btn = document.querySelector('.update-btn');
         btn.textContent = 'Updating...';
         btn.disabled = true;
+        // Save current tab before reload
+        const activeTab = document.querySelector('.tab-btn.active');
+        if (activeTab) {{
+            localStorage.setItem('activePortfolio', activeTab.dataset.portfolio);
+        }}
         fetch('/update')
             .then(r => r.text())
             .then(() => location.reload())
