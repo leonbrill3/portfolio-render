@@ -16,7 +16,7 @@ ANNABAY_HOLDINGS = {
     "MSFT": {"name": "Microsoft Corp", "qty": 300, "cost": 112500},
     "CROX": {"name": "Crocs Inc", "qty": 1500, "cost": 114000},
     "CNSWF": {"name": "Constellation Software", "qty": 100, "cost": 247899},
-    "PDD": {"name": "PDD Holdings", "qty": 1000, "cost": 114000},
+    "PDD": {"name": "PDD Holdings", "qty": 2000, "cost": 196000},
     "UBER": {"name": "Uber Technologies", "qty": 3000, "cost": 234510},
     "AMR": {"name": "Alpha Metallurgical Resources", "qty": 1750, "cost": 278250},
     "BN": {"name": "Brookfield Corp", "qty": 6000, "cost": 271200},
@@ -33,7 +33,7 @@ ANNABAY_FOREIGN = {
     "TGO.TO": {"name": "Terago Inc", "qty": 150000, "cost": 97816, "currency": "CAD", "fx_rate": 1.376},
     "1970.HK": {"name": "IMAX China Holding", "qty": 13000, "cost": 12782, "currency": "HKD", "fx_rate": 7.8266},
 }
-ANNABAY_CASH = {"USD": 162163, "EUR": 201350}
+ANNABAY_CASH = {"USD": 80163, "EUR": 201350}
 
 # ============== PORTFOLIO 2: SCHWAB 1 ==============
 SCHWAB1_HOLDINGS = {
