@@ -58,13 +58,13 @@ SCHWAB2_HOLDINGS = {
     "PDD": {"name": "PDD Holdings ADR", "qty": 1000, "cost": 93750},
     "TAVHY": {"name": "TAV Havalimanlari", "qty": 5000, "cost": 112227},
     "TOITF": {"name": "Topicus.com Inc", "qty": 1000, "cost": 70527},
-    "UBER": {"name": "Uber Technologies", "qty": 1500, "cost": 107879},
+    "UBER": {"name": "Uber Technologies", "qty": 2500, "cost": 277009},
 }
 SCHWAB2_TBILLS = {
     "912797TD9": {"name": "US Treasury Bill 26U", "qty": 500000, "cost": 498661},
     "912797TF4": {"name": "US Treasury Bill 26U", "qty": 500000, "cost": 497964},
 }
-SCHWAB2_CASH = {"USD": 208477}
+SCHWAB2_CASH = {"USD": 39347}
 
 # ============== PORTFOLIO 4: MORGAN STANLEY ==============
 MS_HOLDINGS = {
