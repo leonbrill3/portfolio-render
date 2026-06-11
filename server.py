@@ -64,7 +64,7 @@ SCHWAB2_TBILLS = {
     "912797TD9": {"name": "US Treasury Bill 26U", "qty": 500000, "cost": 498661},
     "912797TF4": {"name": "US Treasury Bill 26U", "qty": 500000, "cost": 497964},
 }
-SCHWAB2_CASH = {"USD": 39347}
+SCHWAB2_CASH = {"USD": 139359}
 
 # ============== PORTFOLIO 4: MORGAN STANLEY ==============
 MS_HOLDINGS = {
