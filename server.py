@@ -46,8 +46,8 @@ SCHWAB1_HOLDINGS = {
     "TOITF": {"name": "Topicus.com Inc", "qty": 500, "cost": 25003},
 }
 SCHWAB1_OPTIONS = {
-    "SOC": {"name": "Call Sable Offshore JAN28 $10", "contracts": 50, "cost": 11383, "strike": 10, "expiry": "21.01.2028"},
-    "TDW": {"name": "Call Tidewater JAN27 $60", "contracts": 100, "cost": 81315, "strike": 60, "expiry": "15.01.2027"},
+    "SOC": {"name": "Call Sable Offshore JAN28 $10", "contracts": 50, "cost": 11383, "strike": 10, "expiry": "21.01.2028", "market_value": 36000},
+    "TDW": {"name": "Call Tidewater JAN27 $60", "contracts": 100, "cost": 81315, "strike": 60, "expiry": "15.01.2027", "market_value": 206000},
 }
 SCHWAB1_CASH = {"USD": -128904}  # Margin balance
 
@@ -304,6 +304,10 @@ def generate_portfolio_html(portfolio_id, portfolio, prices):
         underlying_day_change = price_data["day_change"]
 
         est_value, delta = calc_option_value(underlying_price, data["strike"], data["expiry"], data["contracts"])
+        # Prefer the actual Schwab option market value when provided (the heuristic
+        # can't match live option premiums); keep delta only for the day-change estimate.
+        if data.get("market_value") is not None:
+            est_value = data["market_value"]
         option_day_gain = underlying_day_change * delta * 100 * data["contracts"]
 
         gain_loss = est_value - data["cost"]
