@@ -54,17 +54,19 @@ SCHWAB1_CASH = {"USD": -128904}  # Margin balance
 # ============== PORTFOLIO 3: SCHWAB 2 ==============
 SCHWAB2_HOLDINGS = {
     "CNR": {"name": "Core Natural Resources", "qty": 1000, "cost": 83880},
+    "KSPI": {"name": "Kaspi KZ JSC", "qty": 1000, "cost": 80750},
     "MIAX": {"name": "Miami Intl Holdings Inc", "qty": 2500, "cost": 103925},
     "PDD": {"name": "PDD Holdings ADR", "qty": 1000, "cost": 93750},
     "TAVHY": {"name": "TAV Havalimanlari", "qty": 5000, "cost": 112227},
     "TOITF": {"name": "Topicus.com Inc", "qty": 1000, "cost": 70527},
+    "TPB": {"name": "Turning Pt Brands Inc", "qty": 1000, "cost": 81380},
     "UBER": {"name": "Uber Technologies", "qty": 2500, "cost": 176999},
 }
 SCHWAB2_TBILLS = {
     "912797TD9": {"name": "US Treasury Bill 26U", "qty": 500000, "cost": 498661},
     "912797TF4": {"name": "US Treasury Bill 26U", "qty": 500000, "cost": 497964},
 }
-SCHWAB2_CASH = {"USD": 139459}
+SCHWAB2_CASH = {"USD": -22671}  # Margin balance after buying KSPI + TPB
 
 # ============== PORTFOLIO 4: MORGAN STANLEY ==============
 MS_HOLDINGS = {
