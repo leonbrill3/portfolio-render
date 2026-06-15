@@ -22,7 +22,7 @@ ANNABAY_HOLDINGS = {
     "BN": {"name": "Brookfield Corp", "qty": 6000, "cost": 271200},
     "CNR": {"name": "Core Natural Resources", "qty": 1000, "cost": 75500},
     "MIAX": {"name": "Miami International Holdings", "qty": 2500, "cost": 105000},
-    "SNAP": {"name": "Snap Inc", "qty": 20000, "cost": 80000},
+    "SNAP": {"name": "Snap Inc", "qty": 20000, "cost": 78800},
 }
 ANNABAY_OPTIONS = {
     "WDAY": {"name": "Call Workday JAN28 $150", "contracts": 25, "cost": 100000, "strike": 150, "expiry": "21.01.2028"},
@@ -30,10 +30,10 @@ ANNABAY_OPTIONS = {
 }
 ANNABAY_FOREIGN = {
     "DBO.TO": {"name": "D-Box Technologies", "qty": 125000, "cost": 73893, "currency": "CAD", "fx_rate": 1.376},
-    "TGO.TO": {"name": "Terago Inc", "qty": 150000, "cost": 97816, "currency": "CAD", "fx_rate": 1.376},
+    "TGO.TO": {"name": "Terago Inc", "qty": 150000, "cost": 97551, "currency": "CAD", "fx_rate": 1.376},
     "1970.HK": {"name": "IMAX China Holding", "qty": 13000, "cost": 12782, "currency": "HKD", "fx_rate": 7.8266},
 }
-ANNABAY_CASH = {"USD": 80163, "EUR": 201350}
+ANNABAY_CASH = {"USD": 72370, "EUR": 172527}  # PDF 15.06.2026: USD 72,370 + EUR 149,117 (=$172,527)
 
 # ============== PORTFOLIO 2: SCHWAB 1 ==============
 SCHWAB1_HOLDINGS = {
