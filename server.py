@@ -38,18 +38,18 @@ ANNABAY_CASH = {"USD": 72370, "EUR": -17473}  # EUR reduced by $190,000 to fund 
 # ============== PORTFOLIO 2: SCHWAB 1 ==============
 SCHWAB1_HOLDINGS = {
     "BN": {"name": "Brookfield Corp F Class A", "qty": 3000, "cost": 60860},
-    "CNR": {"name": "Core Natural Resources", "qty": 1108, "cost": 82984},
+    "CNR": {"name": "Core Natural Resources", "qty": 1108, "cost": 82985},
     "PNPFF": {"name": "Pinetree Capital Ltd", "qty": 5700, "cost": 47502},
     "SOC": {"name": "Sable Offshore Corp", "qty": 0, "cost": 0},  # Stock position shows dash
-    "TAVHY": {"name": "TAV Havalimanlari", "qty": 7000, "cost": 110846},
+    "TAVHY": {"name": "TAV Havalimanlari", "qty": 7000, "cost": 110847},
     "TDW": {"name": "Tidewater Inc", "qty": 0, "cost": 0},  # Stock position shows dash
     "TOITF": {"name": "Topicus.com Inc", "qty": 500, "cost": 25003},
 }
 SCHWAB1_OPTIONS = {
-    "SOC": {"name": "Call Sable Offshore JAN28 $10", "contracts": 50, "cost": 11383, "strike": 10, "expiry": "21.01.2028", "market_value": 36000},
-    "TDW": {"name": "Call Tidewater JAN27 $60", "contracts": 100, "cost": 81315, "strike": 60, "expiry": "15.01.2027", "market_value": 206000},
+    "SOC": {"name": "Call Sable Offshore JAN28 $10", "contracts": 50, "cost": 11383, "strike": 10, "expiry": "21.01.2028", "market_value": 17600},
+    "TDW": {"name": "Call Tidewater JAN27 $60", "contracts": 100, "cost": 81315, "strike": 60, "expiry": "15.01.2027", "market_value": 126000},
 }
-SCHWAB1_CASH = {"USD": -128904}  # Margin balance
+SCHWAB1_CASH = {"USD": -129910}  # Margin balance per 25.06.2026 statement
 
 # ============== PORTFOLIO 3: SCHWAB 2 ==============
 # Reconciled to Schwab statement 25.06.2026 (T-bill sold, AMZN bought, cash +$302,594)
