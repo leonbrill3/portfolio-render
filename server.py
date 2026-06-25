@@ -13,7 +13,7 @@ PORT = int(os.environ.get("PORT", 10000))
 ANNABAY_HOLDINGS = {
     "RIG": {"name": "Transocean Ltd", "qty": 25000, "cost": 97500},
     "PSH.AS": {"name": "Pershing Square Holdings", "qty": 3000, "cost": 191310, "currency": "EUR", "fx_rate": 1.163},
-    "MSFT": {"name": "Microsoft Corp", "qty": 300, "cost": 112500},
+    "MSFT": {"name": "Microsoft Corp", "qty": 800, "cost": 302500},  # 300 @ $375 + 500 @ $380 (added 25.06.2026)
     "CROX": {"name": "Crocs Inc", "qty": 1500, "cost": 114000},
     "CNSWF": {"name": "Constellation Software", "qty": 100, "cost": 247899},
     "PDD": {"name": "PDD Holdings", "qty": 2000, "cost": 196000},
@@ -33,7 +33,7 @@ ANNABAY_FOREIGN = {
     "TGO.TO": {"name": "Terago Inc", "qty": 150000, "cost": 97551, "currency": "CAD", "fx_rate": 1.376},
     "1970.HK": {"name": "IMAX China Holding", "qty": 13000, "cost": 12782, "currency": "HKD", "fx_rate": 7.8266},
 }
-ANNABAY_CASH = {"USD": 72370, "EUR": 172527}  # PDF 15.06.2026: USD 72,370 + EUR 149,117 (=$172,527)
+ANNABAY_CASH = {"USD": 72370, "EUR": -17473}  # EUR reduced by $190,000 to fund 500 MSFT @ $380 buy (25.06.2026); was $172,527
 
 # ============== PORTFOLIO 2: SCHWAB 1 ==============
 SCHWAB1_HOLDINGS = {
@@ -52,21 +52,21 @@ SCHWAB1_OPTIONS = {
 SCHWAB1_CASH = {"USD": -128904}  # Margin balance
 
 # ============== PORTFOLIO 3: SCHWAB 2 ==============
+# Reconciled to Schwab statement 25.06.2026 (T-bill sold, AMZN bought, cash +$302,594)
 SCHWAB2_HOLDINGS = {
-    "CNR": {"name": "Core Natural Resources", "qty": 1000, "cost": 83880},
-    "KSPI": {"name": "Kaspi KZ JSC", "qty": 1500, "cost": 122000},
-    "MIAX": {"name": "Miami Intl Holdings Inc", "qty": 2500, "cost": 103925},
-    "PDD": {"name": "PDD Holdings ADR", "qty": 1000, "cost": 93750},
-    "TAVHY": {"name": "TAV Havalimanlari", "qty": 5000, "cost": 112227},
-    "TOITF": {"name": "Topicus.com Inc", "qty": 1000, "cost": 70527},
-    "TPB": {"name": "Turning Pt Brands Inc", "qty": 1000, "cost": 81380},
     "UBER": {"name": "Uber Technologies", "qty": 2500, "cost": 176999},
+    "MSFT": {"name": "Microsoft Corp", "qty": 500, "cost": 189050},
+    "AMZN": {"name": "Amazon.com Inc", "qty": 700, "cost": 160202},
+    "PDD": {"name": "PDD Holdings ADR", "qty": 2000, "cost": 169970},
+    "MIAX": {"name": "Miami Intl Holdings Inc", "qty": 3513.8523, "cost": 143105},
+    "KSPI": {"name": "Kaspi KZ JSC", "qty": 1500, "cost": 122000},
+    "AMR": {"name": "Alpha Metallurgical Resources", "qty": 750, "cost": 131999},
+    "CNR": {"name": "Core Natural Resources", "qty": 1500, "cost": 125165},
+    "TAVHY": {"name": "TAV Havalimanlari", "qty": 5000, "cost": 112227},
+    "TOITF": {"name": "Topicus.com Inc", "qty": 1500, "cost": 104229},
 }
-SCHWAB2_TBILLS = {
-    "912797TD9": {"name": "US Treasury Bill 26U", "qty": 500000, "cost": 498661},
-    "912797TF4": {"name": "US Treasury Bill 26U", "qty": 500000, "cost": 497964},
-}
-SCHWAB2_CASH = {"USD": -63921}  # Margin balance after adding 500 KSPI
+SCHWAB2_TBILLS = {}  # 912797TF4 sold / matured; no fixed income on 25.06.2026 statement
+SCHWAB2_CASH = {"USD": 302594}  # Cash & money market per 25.06.2026 statement
 
 # ============== PORTFOLIO 4: MORGAN STANLEY ==============
 MS_HOLDINGS = {
