@@ -4,10 +4,42 @@
 import http.server
 import json
 import urllib.request
+import urllib.error
+import re
+import threading
+import time
 import os
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 
 PORT = int(os.environ.get("PORT", 10000))
+
+_UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+       "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+
+# Google Finance quote pages, keyed by our internal symbol -> (google ticker, exchange).
+# Yahoo feeds Render's datacenter IP stale (previous-close) data, which made every
+# day-change read 0.00%. Google Finance is not IP-gated, so we scrape its quote
+# pages instead — they return a fresh price + signed day change. Exchanges below
+# were resolved empirically (see resolve test). PSH.AS is intentionally omitted
+# (no clean Google listing) and falls back to Yahoo.
+GF_MAP = {
+    "AAL": ("AAL", "NASDAQ"), "AMZN": ("AMZN", "NASDAQ"), "CROX": ("CROX", "NASDAQ"),
+    "KSPI": ("KSPI", "NASDAQ"), "MSFT": ("MSFT", "NASDAQ"), "PDD": ("PDD", "NASDAQ"),
+    "WDAY": ("WDAY", "NASDAQ"),
+    "AMR": ("AMR", "NYSE"), "BN": ("BN", "NYSE"), "CNR": ("CNR", "NYSE"),
+    "MIAX": ("MIAX", "NYSE"), "NE": ("NE", "NYSE"), "RIG": ("RIG", "NYSE"),
+    "SNAP": ("SNAP", "NYSE"), "SOC": ("SOC", "NYSE"), "TDW": ("TDW", "NYSE"),
+    "UBER": ("UBER", "NYSE"), "VAL": ("VAL", "NYSE"),
+    "CNSWF": ("CNSWF", "OTCMKTS"), "LMGIF": ("LMGIF", "OTCMKTS"),
+    "PNPFF": ("PNPFF", "OTCMKTS"), "TAVHY": ("TAVHY", "OTCMKTS"),
+    "TOITF": ("TOITF", "OTCMKTS"),
+    "DBO.TO": ("DBO", "TSE"), "TGO.TO": ("TGO", "TSE"), "1970.HK": ("1970", "HKG"),
+}
+
+_RE_PRICE = re.compile(r'class="ujg0He"><div class="N6SYTe"><span jsname="Pdsbrc"[^>]*><span>([^<]+)</span>')
+_RE_PCT = re.compile(r'jsname="vY9t3b"[^>]*><span[^>]*>([+\-]?[0-9.]+)%')
+_RE_AMT = re.compile(r'jsname="xnruHf"[^>]*><span>([+\-]?[0-9.,]+)</span>')
 
 # ============== PORTFOLIO 1: ANNABAY ==============
 ANNABAY_HOLDINGS = {
@@ -117,6 +149,45 @@ PORTFOLIOS = {
     },
 }
 
+def fetch_price_google(symbol):
+    """Scrape a Google Finance quote page. Returns the same dict shape as the
+    Yahoo fetcher. Prices come back in the listing's local currency (USD for US,
+    CAD for TSE, HKD for HKG) — the same as Yahoo gave — so the existing fx logic
+    downstream is unchanged."""
+    entry = GF_MAP.get(symbol)
+    if not entry:
+        return None
+    gticker, exchange = entry
+    url = f"https://www.google.com/finance/quote/{gticker}:{exchange}"
+    for attempt in range(3):
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": _UA})
+            html = urllib.request.urlopen(req, timeout=20).read().decode("utf-8", "ignore")
+            m = _RE_PRICE.search(html)
+            if not m:
+                raise ValueError("price not found")
+            price = float(re.sub(r"[^0-9.]", "", m.group(1)))
+            tail = html[m.end():m.end() + 600]
+            pm = _RE_PCT.search(tail)
+            am = _RE_AMT.search(tail)
+            day_change_pct = float(pm.group(1)) if pm else 0.0
+            if am:
+                day_change = float(am.group(1).replace(",", ""))
+            elif pm:
+                # derive amount from pct if the amount span is missing
+                day_change = price - price / (1 + day_change_pct / 100) if day_change_pct else 0.0
+            else:
+                day_change = 0.0
+            prev_close = price - day_change
+            return {"price": price, "prev_close": prev_close,
+                    "day_change": day_change, "day_change_pct": day_change_pct}
+        except Exception as e:
+            if attempt == 2:
+                print(f"Google fetch failed for {symbol} ({gticker}:{exchange}): {e}")
+            time.sleep(0.5)
+    return None
+
+
 def fetch_price_yahoo(symbol):
     try:
         url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?interval=1d&range=5d"
@@ -152,13 +223,28 @@ def fetch_all_prices():
         all_symbols.update(p["options"].keys())
         all_symbols.update(p["foreign"].keys())
 
-    for symbol in all_symbols:
-        if symbol.startswith("91279"):  # Skip T-bills
+    wanted = [s for s in all_symbols if not s.startswith("91279")]  # skip T-bills
+
+    # Primary source: Google Finance (fresh prices from the cloud). Fetch the
+    # mapped symbols concurrently since each page is a separate HTTP request.
+    google_syms = [s for s in wanted if s in GF_MAP]
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        for symbol, data in zip(google_syms, pool.map(fetch_price_google, google_syms)):
+            if data:
+                prices[symbol] = data
+
+    # Fallback source: Yahoo, for anything Google doesn't cover (e.g. PSH.AS) or
+    # that momentarily failed. Yahoo may be stale on Render but keeps the holding
+    # present with an approximately-correct value.
+    for symbol in wanted:
+        if symbol in prices:
             continue
         data = fetch_price_yahoo(symbol)
         if data:
             prices[symbol] = data
-            print(f"  {symbol}: {data['price']}")
+
+    for symbol, d in prices.items():
+        print(f"  {symbol}: {d['price']} ({d.get('day_change_pct', 0):+.2f}%)")
     return prices
 
 def calc_option_value(underlying_price, strike, expiry_str, contracts):
@@ -761,15 +847,38 @@ def generate_html(prices):
     return html
 
 
-class PortfolioHandler(http.server.BaseHTTPRequestHandler):
-    cached_html = None
+# --- Price cache + background refresh -------------------------------------
+# Refreshing on every request is slow (26 page fetches) and hammers the source.
+# Cache the rendered HTML and refresh in the background, at most once per TTL.
+REFRESH_TTL = 60  # seconds
+_cache = {"html": None, "ts": 0.0}
+_refresh_lock = threading.Lock()
 
+
+def refresh_prices():
+    if not _refresh_lock.acquire(blocking=False):
+        return  # a refresh is already running
+    try:
+        prices = fetch_all_prices()
+        if prices:
+            _cache["html"] = generate_html(prices)
+            _cache["ts"] = time.time()
+    finally:
+        _refresh_lock.release()
+
+
+def maybe_refresh(force=False):
+    if force or _cache["html"] is None or (time.time() - _cache["ts"]) > REFRESH_TTL:
+        threading.Thread(target=refresh_prices, daemon=True).start()
+
+
+class PortfolioHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
-        if self.path == '/update' or self.path == '/' or self.path == '':
-            print("Fetching prices...")
-            prices = fetch_all_prices()
-            if prices:
-                PortfolioHandler.cached_html = generate_html(prices)
+        if self.path in ('/', '', '/update'):
+            if _cache["html"] is None:
+                refresh_prices()            # first visitor: fetch synchronously
+            else:
+                maybe_refresh(force=self.path == '/update')
 
             if self.path == '/update':
                 self.send_response(200)
@@ -782,10 +891,11 @@ class PortfolioHandler(http.server.BaseHTTPRequestHandler):
                 self.send_header('Content-type', 'text/html')
                 self.send_header('Cache-Control', 'no-cache')
                 self.end_headers()
-                if PortfolioHandler.cached_html:
-                    self.wfile.write(PortfolioHandler.cached_html.encode())
-                else:
-                    self.wfile.write(b'Error fetching prices')
+                self.wfile.write((_cache["html"] or "Loading prices, refresh in a moment...").encode())
+        elif self.path == '/healthz':
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(b'ok')
         else:
             self.send_response(404)
             self.end_headers()
@@ -796,12 +906,9 @@ class PortfolioHandler(http.server.BaseHTTPRequestHandler):
 
 if __name__ == '__main__':
     print(f"Starting portfolio server on port {PORT}...")
-    print("Fetching initial prices...")
-    prices = fetch_all_prices()
-    if prices:
-        PortfolioHandler.cached_html = generate_html(prices)
-        print("Initial prices loaded!")
-
-    server = http.server.HTTPServer(('0.0.0.0', PORT), PortfolioHandler)
+    # Bind the port first so Render marks the deploy live immediately, then warm
+    # the price cache in the background (the 26 page fetches take a few seconds).
+    server = http.server.ThreadingHTTPServer(('0.0.0.0', PORT), PortfolioHandler)
     print(f"Server running on http://0.0.0.0:{PORT}")
+    threading.Thread(target=refresh_prices, daemon=True).start()
     server.serve_forever()
