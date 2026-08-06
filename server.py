@@ -37,6 +37,13 @@ GF_MAP = {
     "DBO.TO": ("DBO", "TSE"), "TGO.TO": ("TGO", "TSE"), "1970.HK": ("1970", "HKG"),
 }
 
+# Holdings whose needed currency isn't on Google: keep the primary (Yahoo) price
+# but borrow a fresh day-change % from an equivalent listing that IS on Google.
+# PSH.AS is the Amsterdam EUR line (Leon values it in EUR); Google only has the
+# USD line PSHZF. Same security -> essentially the same daily % move, so we keep
+# the EUR price and apply PSHZF's day-change %.
+DAYPCT_PROXY = {"PSH.AS": ("PSHZF", "OTCMKTS")}
+
 _RE_PRICE = re.compile(r'class="ujg0He"><div class="N6SYTe"><span jsname="Pdsbrc"[^>]*><span>([^<]+)</span>')
 _RE_PCT = re.compile(r'jsname="vY9t3b"[^>]*><span[^>]*>([+\-]?[0-9.]+)%')
 _RE_AMT = re.compile(r'jsname="xnruHf"[^>]*><span>([+\-]?[0-9.,]+)</span>')
@@ -149,15 +156,8 @@ PORTFOLIOS = {
     },
 }
 
-def fetch_price_google(symbol):
-    """Scrape a Google Finance quote page. Returns the same dict shape as the
-    Yahoo fetcher. Prices come back in the listing's local currency (USD for US,
-    CAD for TSE, HKD for HKG) — the same as Yahoo gave — so the existing fx logic
-    downstream is unchanged."""
-    entry = GF_MAP.get(symbol)
-    if not entry:
-        return None
-    gticker, exchange = entry
+def _google_quote(gticker, exchange):
+    """Scrape one Google Finance quote page -> price dict (local currency), or None."""
     url = f"https://www.google.com/finance/quote/{gticker}:{exchange}"
     for attempt in range(3):
         try:
@@ -174,18 +174,23 @@ def fetch_price_google(symbol):
             if am:
                 day_change = float(am.group(1).replace(",", ""))
             elif pm:
-                # derive amount from pct if the amount span is missing
                 day_change = price - price / (1 + day_change_pct / 100) if day_change_pct else 0.0
             else:
                 day_change = 0.0
-            prev_close = price - day_change
-            return {"price": price, "prev_close": prev_close,
+            return {"price": price, "prev_close": price - day_change,
                     "day_change": day_change, "day_change_pct": day_change_pct}
         except Exception as e:
             if attempt == 2:
-                print(f"Google fetch failed for {symbol} ({gticker}:{exchange}): {e}")
+                print(f"Google fetch failed for {gticker}:{exchange}: {e}")
             time.sleep(0.5)
     return None
+
+
+def fetch_price_google(symbol):
+    """Google Finance price for a portfolio symbol (local currency — same as Yahoo
+    gave — so downstream fx logic is unchanged)."""
+    entry = GF_MAP.get(symbol)
+    return _google_quote(*entry) if entry else None
 
 
 def fetch_price_yahoo(symbol):
@@ -242,6 +247,18 @@ def fetch_all_prices():
         data = fetch_price_yahoo(symbol)
         if data:
             prices[symbol] = data
+
+    # Overlay a fresh day-change % (from an equivalent Google listing) onto
+    # holdings we could only price via Yahoo — keeps the price, fixes the 0.00%.
+    for symbol, (gt, exch) in DAYPCT_PROXY.items():
+        if symbol not in prices:
+            continue
+        proxy = _google_quote(gt, exch)
+        if proxy:
+            price = prices[symbol]["price"]
+            pct = proxy["day_change_pct"]
+            dc = price * pct / 100.0
+            prices[symbol].update(day_change_pct=pct, day_change=dc, prev_close=price - dc)
 
     for symbol, d in prices.items():
         print(f"  {symbol}: {d['price']} ({d.get('day_change_pct', 0):+.2f}%)")
