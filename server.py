@@ -231,12 +231,21 @@ def fetch_all_prices():
     wanted = [s for s in all_symbols if not s.startswith("91279")]  # skip T-bills
 
     # Primary source: Google Finance (fresh prices from the cloud). Fetch the
-    # mapped symbols concurrently since each page is a separate HTTP request.
+    # mapped symbols AND the day-% proxy listings (e.g. PSHZF) concurrently in one
+    # batch — fetching a proxy on its own *after* the batch gets throttled by
+    # Google on Render, so it must ride along with the rest.
     google_syms = [s for s in wanted if s in GF_MAP]
+    proxies = {sym: (gt, exch) for sym, (gt, exch) in DAYPCT_PROXY.items()}  # sym -> (gt,exch)
+    proxy_out = {}
     with ThreadPoolExecutor(max_workers=8) as pool:
-        for symbol, data in zip(google_syms, pool.map(fetch_price_google, google_syms)):
-            if data:
-                prices[symbol] = data
+        gfuts = {s: pool.submit(fetch_price_google, s) for s in google_syms}
+        pfuts = {sym: pool.submit(_google_quote, gt, exch) for sym, (gt, exch) in proxies.items()}
+        for s, f in gfuts.items():
+            d = f.result()
+            if d:
+                prices[s] = d
+        for sym, f in pfuts.items():
+            proxy_out[sym] = f.result()
 
     # Fallback source: Yahoo, for anything Google doesn't cover (e.g. PSH.AS) or
     # that momentarily failed. Yahoo may be stale on Render but keeps the holding
@@ -248,20 +257,19 @@ def fetch_all_prices():
         if data:
             prices[symbol] = data
 
-    # Overlay a fresh day-change % (from an equivalent Google listing) onto
-    # holdings we could only price via Yahoo — keeps the price, fixes the 0.00%.
-    for symbol, (gt, exch) in DAYPCT_PROXY.items():
-        if symbol not in prices:
-            continue
-        proxy = _google_quote(gt, exch)
-        if proxy:
+    # Overlay the fresh proxy day-change % onto the Yahoo-priced holding — keeps
+    # the (EUR) price, fixes the 0.00%.
+    for symbol, proxy in proxy_out.items():
+        if symbol in prices and proxy:
             price = prices[symbol]["price"]
             pct = proxy["day_change_pct"]
             dc = price * pct / 100.0
             prices[symbol].update(day_change_pct=pct, day_change=dc, prev_close=price - dc)
+            print(f"  proxy {symbol}: day% {pct:+.2f} from {proxies[symbol][0]}", flush=True)
+        elif symbol in prices:
+            print(f"  proxy {symbol}: FAILED (kept Yahoo day%)", flush=True)
 
-    for symbol, d in prices.items():
-        print(f"  {symbol}: {d['price']} ({d.get('day_change_pct', 0):+.2f}%)")
+    print(f"fetched {len(prices)} symbols", flush=True)
     return prices
 
 def calc_option_value(underlying_price, strike, expiry_str, contracts):
