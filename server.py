@@ -33,17 +33,16 @@ GF_MAP = {
     "UBER": ("UBER", "NYSE"), "VAL": ("VAL", "NYSE"),
     "CNSWF": ("CNSWF", "OTCMKTS"), "LMGIF": ("LMGIF", "OTCMKTS"),
     "PNPFF": ("PNPFF", "OTCMKTS"), "TAVHY": ("TAVHY", "OTCMKTS"),
-    "TOITF": ("TOITF", "OTCMKTS"),
+    "TOITF": ("TOITF", "OTCMKTS"), "PSHZF": ("PSHZF", "OTCMKTS"),
     "DBO.TO": ("DBO", "TSE"), "TGO.TO": ("TGO", "TSE"), "CPH.TO": ("CPH", "TSE"),
     "1970.HK": ("1970", "HKG"),
 }
 
-# Holdings whose needed currency isn't on Google: keep the primary (Yahoo) price
-# but borrow a fresh day-change % from an equivalent listing that IS on Google.
-# PSH.AS is the Amsterdam EUR line (Leon values it in EUR); Google only has the
-# USD line PSHZF. Same security -> essentially the same daily % move, so we keep
-# the EUR price and apply PSHZF's day-change %.
-DAYPCT_PROXY = {"PSH.AS": ("PSHZF", "OTCMKTS")}
+# Day-% proxy: for a holding priced elsewhere, borrow a fresh day-change % from an
+# equivalent listing that IS on Google. Empty now that Pershing Square is priced
+# directly off its USD OTC line PSHZF — the Amsterdam EUR line PSH.AS got delisted
+# on Yahoo (2026-08-20), which was silently dropping the whole ~$158K position.
+DAYPCT_PROXY = {}
 
 _RE_PRICE = re.compile(r'class="ujg0He"><div class="N6SYTe"><span jsname="Pdsbrc"[^>]*><span>([^<]+)</span>')
 _RE_PCT = re.compile(r'jsname="vY9t3b"[^>]*><span[^>]*>([+\-]?[0-9.]+)%')
@@ -52,7 +51,7 @@ _RE_AMT = re.compile(r'jsname="xnruHf"[^>]*><span>([+\-]?[0-9.,]+)</span>')
 # ============== PORTFOLIO 1: ANNABAY ==============
 ANNABAY_HOLDINGS = {
     "RIG": {"name": "Transocean Ltd", "qty": 25000, "cost": 97500},
-    "PSH.AS": {"name": "Pershing Square Holdings", "qty": 3000, "cost": 191324, "currency": "EUR", "fx_rate": 1.1521},
+    "PSHZF": {"name": "Pershing Square Holdings", "qty": 3000, "cost": 191324},  # USD OTC line; PSH.AS (EUR) delisted on Yahoo 2026-08-20. Statement values it in USD.
     "MSFT": {"name": "Microsoft Corp", "qty": 700, "cost": 263732},  # per 13.08.2026 statement
     "CROX": {"name": "Crocs Inc", "qty": 1500, "cost": 114000},
     "CNSWF": {"name": "Constellation Software", "qty": 100, "cost": 247899},
@@ -65,8 +64,8 @@ ANNABAY_HOLDINGS = {
     "SNAP": {"name": "Snap Inc", "qty": 20000, "cost": 78800},
 }
 ANNABAY_OPTIONS = {
-    "WDAY": {"name": "Call Workday JAN28 $150", "contracts": 25, "cost": 100000, "strike": 150, "expiry": "21.01.2028"},
-    "SOC": {"name": "Call Sable Offshore JAN27 $12.5", "contracts": 100, "cost": 67000, "strike": 12.5, "expiry": "15.01.2027"},
+    "WDAY": {"name": "Call Workday JAN28 $150", "contracts": 25, "cost": 100000, "strike": 150, "expiry": "21.01.2028", "market_value": 159375},  # 13.08 statement mark $63.75 (heuristic can't price options)
+    "SOC": {"name": "Call Sable Offshore JAN27 $12.5", "contracts": 100, "cost": 67000, "strike": 12.5, "expiry": "15.01.2027", "market_value": 1900},  # 13.08 statement mark $0.19
 }
 ANNABAY_FOREIGN = {
     "DBO.TO": {"name": "D-Box Technologies", "qty": 125000, "cost": 73893, "currency": "CAD", "fx_rate": 1.3940},
