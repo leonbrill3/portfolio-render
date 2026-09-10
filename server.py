@@ -113,17 +113,18 @@ SCHWAB2_TBILLS = {}  # 912797TF4 sold / matured; no fixed income on 25.06.2026 s
 SCHWAB2_CASH = {"USD": 302594}  # Cash & money market per 25.06.2026 statement
 
 # ============== PORTFOLIO 4: MORGAN STANLEY ==============
+# Reconciled to Morgan Stanley holdings 10.09.2026 (Total Cost $392,120.58, MV $846,706.98)
 MS_HOLDINGS = {
     "MSFT": {"name": "Microsoft Corp", "qty": 500, "cost": 78555},
-    "AMZN": {"name": "Amazon.com Inc", "qty": 700, "cost": 76510},
+    "AMZN": {"name": "Amazon.com Inc", "qty": 800, "cost": 99310},  # was 700 @ 76510
     "VAL": {"name": "Valaris Ltd", "qty": 1800, "cost": 55800},
     "NE": {"name": "Noble Corp", "qty": 3000, "cost": 59190},
     "SNAP": {"name": "Snap Inc", "qty": 20000, "cost": 99230},
-    "LMGIF": {"name": "Lumine Group Inc", "qty": 1501, "cost": 21888},
     "AAL": {"name": "American Airlines", "qty": 2, "cost": 36},
+    # Lumine Group (LMGIF) no longer held per 10.09.2026.
 }
 # Note: PSTH and ESC Pershing Square are not publicly traded
-MS_CASH = {"USD": 2135}
+MS_CASH = {"USD": 3757}  # Cash/MMF/BDP total $3,756.69 per 10.09.2026
 
 # All portfolios config
 PORTFOLIOS = {
