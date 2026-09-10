@@ -26,11 +26,12 @@ _UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
 GF_MAP = {
     "AAL": ("AAL", "NASDAQ"), "AMZN": ("AMZN", "NASDAQ"), "CROX": ("CROX", "NASDAQ"),
     "KSPI": ("KSPI", "NASDAQ"), "MSFT": ("MSFT", "NASDAQ"), "PDD": ("PDD", "NASDAQ"),
-    "WDAY": ("WDAY", "NASDAQ"),
+    "WDAY": ("WDAY", "NASDAQ"), "META": ("META", "NASDAQ"), "RDI": ("RDI", "NASDAQ"),
+    "METC": ("METC", "NASDAQ"),
     "AMR": ("AMR", "NYSE"), "BN": ("BN", "NYSE"), "CNR": ("CNR", "NYSE"),
     "MIAX": ("MIAX", "NYSE"), "NE": ("NE", "NYSE"), "RIG": ("RIG", "NYSE"),
     "SNAP": ("SNAP", "NYSE"), "SOC": ("SOC", "NYSE"), "TDW": ("TDW", "NYSE"),
-    "UBER": ("UBER", "NYSE"), "VAL": ("VAL", "NYSE"),
+    "TME": ("TME", "NYSE"), "UBER": ("UBER", "NYSE"), "VAL": ("VAL", "NYSE"),
     "CNSWF": ("CNSWF", "OTCMKTS"), "LMGIF": ("LMGIF", "OTCMKTS"),
     "PNPFF": ("PNPFF", "OTCMKTS"), "TAVHY": ("TAVHY", "OTCMKTS"),
     "TOITF": ("TOITF", "OTCMKTS"), "PSHZF": ("PSHZF", "OTCMKTS"),
@@ -96,21 +97,28 @@ SCHWAB1_OPTIONS = {
 SCHWAB1_CASH = {"USD": -129910}  # Margin balance per 25.06.2026 statement
 
 # ============== PORTFOLIO 3: SCHWAB 2 ==============
-# Reconciled to Schwab statement 25.06.2026 (T-bill sold, AMZN bought, cash +$302,594)
+# Reconciled to Schwab Positions 10.09.2026. Cost bases tie to Schwab Total cost basis $1,907,071.75.
 SCHWAB2_HOLDINGS = {
-    "UBER": {"name": "Uber Technologies", "qty": 2500, "cost": 176999},
-    "MSFT": {"name": "Microsoft Corp", "qty": 500, "cost": 189050},
+    "UBER": {"name": "Uber Technologies", "qty": 3500, "cost": 243042},
+    "MSFT": {"name": "Microsoft Corp", "qty": 500, "cost": 186335},
+    "AMR": {"name": "Alpha Metallurgical Resources", "qty": 1000, "cost": 166129},
+    "CNR": {"name": "Core Natural Resources", "qty": 2000, "cost": 164540},
+    "META": {"name": "Meta Platforms Inc", "qty": 300, "cost": 164700},
     "AMZN": {"name": "Amazon.com Inc", "qty": 700, "cost": 160202},
     "PDD": {"name": "PDD Holdings ADR", "qty": 2000, "cost": 169970},
     "MIAX": {"name": "Miami Intl Holdings Inc", "qty": 3513.8523, "cost": 143105},
     "KSPI": {"name": "Kaspi KZ JSC", "qty": 1500, "cost": 122000},
-    "AMR": {"name": "Alpha Metallurgical Resources", "qty": 750, "cost": 131999},
-    "CNR": {"name": "Core Natural Resources", "qty": 1500, "cost": 125165},
+    "TOITF": {"name": "Topicus.com Inc", "qty": 2000, "cost": 136486},
     "TAVHY": {"name": "TAV Havalimanlari", "qty": 5000, "cost": 112227},
-    "TOITF": {"name": "Topicus.com Inc", "qty": 1500, "cost": 104229},
+    "TME": {"name": "Tencent Music Entmt", "qty": 10000, "cost": 88850},
+    "RDI": {"name": "Reading Intl Class A", "qty": 10051, "cost": 17187},
+    # METC (Ramaco) stock line shows 0 shares / dash — held only via the call below.
 }
-SCHWAB2_TBILLS = {}  # 912797TF4 sold / matured; no fixed income on 25.06.2026 statement
-SCHWAB2_CASH = {"USD": 302594}  # Cash & money market per 25.06.2026 statement
+SCHWAB2_OPTIONS = {
+    "METC": {"name": "Call Ramaco Res JAN28 $8", "contracts": 75, "cost": 32300, "strike": 8, "expiry": "21.01.2028", "market_value": 43500},  # 10.09 mark $5.80
+}
+SCHWAB2_TBILLS = {}  # No fixed income
+SCHWAB2_CASH = {"USD": -449991}  # Cash & Cash Investments (margin) per 10.09.2026 Positions
 
 # ============== PORTFOLIO 4: MORGAN STANLEY ==============
 # Reconciled to Morgan Stanley holdings 10.09.2026 (Total Cost $392,120.58, MV $846,706.98)
@@ -147,7 +155,7 @@ PORTFOLIOS = {
     "schwab2": {
         "name": "Schwab 2",
         "holdings": SCHWAB2_HOLDINGS,
-        "options": {},
+        "options": SCHWAB2_OPTIONS,
         "foreign": {},
         "tbills": SCHWAB2_TBILLS,
         "cash": SCHWAB2_CASH,
