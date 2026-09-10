@@ -36,6 +36,7 @@ GF_MAP = {
     "TOITF": ("TOITF", "OTCMKTS"), "PSHZF": ("PSHZF", "OTCMKTS"),
     "DBO.TO": ("DBO", "TSE"), "TGO.TO": ("TGO", "TSE"), "CPH.TO": ("CPH", "TSE"),
     "1970.HK": ("1970", "HKG"),
+    "UMG.AS": ("UMG", "AMS"),
 }
 
 # Day-% proxy: for a holding priced elsewhere, borrow a fresh day-change % from an
@@ -52,29 +53,31 @@ _RE_AMT = re.compile(r'jsname="xnruHf"[^>]*><span>([+\-]?[0-9.,]+)</span>')
 ANNABAY_HOLDINGS = {
     "RIG": {"name": "Transocean Ltd", "qty": 25000, "cost": 97500},
     "PSHZF": {"name": "Pershing Square Holdings", "qty": 3000, "cost": 191324},  # USD OTC line; PSH.AS (EUR) delisted on Yahoo 2026-08-20. Statement values it in USD.
-    "MSFT": {"name": "Microsoft Corp", "qty": 700, "cost": 263732},  # per 13.08.2026 statement
-    "CROX": {"name": "Crocs Inc", "qty": 1500, "cost": 114000},
+    "MSFT": {"name": "Microsoft Corp", "qty": 550, "cost": 207218},  # per 10.09.2026 statement (was 700 @ 263732)
+    "CROX": {"name": "Crocs Inc", "qty": 1200, "cost": 91200},  # per 10.09.2026 statement (was 1500 @ 114000)
     "CNSWF": {"name": "Constellation Software", "qty": 100, "cost": 247899},
     "PDD": {"name": "PDD Holdings", "qty": 2000, "cost": 196000},
     "UBER": {"name": "Uber Technologies", "qty": 3000, "cost": 234500},
-    "AMR": {"name": "Alpha Metallurgical Resources", "qty": 1750, "cost": 278250},
+    "AMR": {"name": "Alpha Metallurgical Resources", "qty": 1500, "cost": 238500},  # per 10.09.2026 statement (was 1750 @ 278250)
     "BN": {"name": "Brookfield Corp", "qty": 6000, "cost": 271220},
     "CNR": {"name": "Core Natural Resources", "qty": 1000, "cost": 75500},
     "MIAX": {"name": "Miami International Holdings", "qty": 2500, "cost": 105000},
     "SNAP": {"name": "Snap Inc", "qty": 20000, "cost": 78800},
+    # EUR-quoted (Euronext Amsterdam); priced native EUR via Google, fx_rate = EUR->USD. New on 10.09.2026 statement.
+    "UMG.AS": {"name": "Universal Music Group", "qty": 6500, "cost": 112421, "currency": "EUR", "fx_rate": 1.1642},
 }
 ANNABAY_OPTIONS = {
-    "WDAY": {"name": "Call Workday JAN28 $150", "contracts": 25, "cost": 100000, "strike": 150, "expiry": "21.01.2028", "market_value": 159375},  # 13.08 statement mark $63.75 (heuristic can't price options)
-    "SOC": {"name": "Call Sable Offshore JAN27 $12.5", "contracts": 100, "cost": 67000, "strike": 12.5, "expiry": "15.01.2027", "market_value": 1900},  # 13.08 statement mark $0.19
+    # WDAY Call JAN28 $150 closed/sold — no longer on 10.09.2026 statement.
+    "SOC": {"name": "Call Sable Offshore JAN27 $12.5", "contracts": 100, "cost": 67000, "strike": 12.5, "expiry": "15.01.2027", "market_value": 1450},  # 10.09 statement mark $0.15
 }
 ANNABAY_FOREIGN = {
-    "DBO.TO": {"name": "D-Box Technologies", "qty": 125000, "cost": 73893, "currency": "CAD", "fx_rate": 1.3940},
-    "CPH.TO": {"name": "Cipher Pharmaceuticals", "qty": 7500, "cost": 78091, "currency": "CAD", "fx_rate": 1.3940},
-    "TGO.TO": {"name": "Terago Inc", "qty": 150000, "cost": 97551, "currency": "CAD", "fx_rate": 1.3940},
-    "1970.HK": {"name": "IMAX China Holding", "qty": 13000, "cost": 12782, "currency": "HKD", "fx_rate": 7.8459},
+    "DBO.TO": {"name": "D-Box Technologies", "qty": 125000, "cost": 73893, "currency": "CAD", "fx_rate": 1.3800},
+    "CPH.TO": {"name": "Cipher Pharmaceuticals", "qty": 7500, "cost": 78091, "currency": "CAD", "fx_rate": 1.3800},
+    "TGO.TO": {"name": "Terago Inc", "qty": 150000, "cost": 97551, "currency": "CAD", "fx_rate": 1.3800},
+    "1970.HK": {"name": "IMAX China Holding", "qty": 13000, "cost": 12782, "currency": "HKD", "fx_rate": 7.840773},
 }
-# Per 13.08.2026 statement: EUR liquidity 39'044 (= $44'981) and USD liability -$27'608
-ANNABAY_CASH = {"USD": -27608, "EUR": 44981}
+# Per 10.09.2026 statement: USD current acct $251'362; EUR current acct 1'089 (= $1'268 @ 1.1642)
+ANNABAY_CASH = {"USD": 251362, "EUR": 1268}
 
 # ============== PORTFOLIO 2: SCHWAB 1 ==============
 SCHWAB1_HOLDINGS = {
