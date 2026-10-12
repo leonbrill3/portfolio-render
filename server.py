@@ -31,6 +31,7 @@ GF_MAP = {
     "AMR": ("AMR", "NYSE"), "BN": ("BN", "NYSE"), "CNR": ("CNR", "NYSE"),
     "MIAX": ("MIAX", "NYSE"), "NE": ("NE", "NYSE"), "RIG": ("RIG", "NYSE"),
     "SNAP": ("SNAP", "NYSE"), "SOC": ("SOC", "NYSE"), "TDW": ("TDW", "NYSE"),
+    "TPB": ("TPB", "NYSE"),
     "TME": ("TME", "NYSE"), "UBER": ("UBER", "NYSE"), "VAL": ("VAL", "NYSE"),
     "CNSWF": ("CNSWF", "OTCMKTS"), "LMGIF": ("LMGIF", "OTCMKTS"),
     "PNPFF": ("PNPFF", "OTCMKTS"), "TAVHY": ("TAVHY", "OTCMKTS"),
@@ -62,7 +63,7 @@ ANNABAY_HOLDINGS = {
     "AMR": {"name": "Alpha Metallurgical Resources", "qty": 1500, "cost": 238500},  # per 10.09.2026 statement (was 1750 @ 278250)
     "BN": {"name": "Brookfield Corp", "qty": 6000, "cost": 271220},
     "CNR": {"name": "Core Natural Resources", "qty": 1000, "cost": 75500},
-    "MIAX": {"name": "Miami International Holdings", "qty": 2500, "cost": 105000},
+    "MIAX": {"name": "Miami International Holdings", "qty": 4500, "cost": 165000},  # bought +2000 @ $30 (2026-10-12), was 2500 @ 105000
     "SNAP": {"name": "Snap Inc", "qty": 20000, "cost": 78800},
     # EUR-quoted (Euronext Amsterdam); priced native EUR via Google, fx_rate = EUR->USD. New on 10.09.2026 statement.
     "UMG.AS": {"name": "Universal Music Group", "qty": 6500, "cost": 112421, "currency": "EUR", "fx_rate": 1.1642},
@@ -78,36 +79,39 @@ ANNABAY_FOREIGN = {
     "1970.HK": {"name": "IMAX China Holding", "qty": 13000, "cost": 12782, "currency": "HKD", "fx_rate": 7.840773},
 }
 # Per 10.09.2026 statement: USD current acct $251'362; EUR current acct 1'089 (= $1'268 @ 1.1642)
-ANNABAY_CASH = {"USD": 251362, "EUR": 1268}
+# 2026-10-12: bought 2000 MIAX @ $30 = -$60'000 USD -> 251362 - 60000 = 191362
+ANNABAY_CASH = {"USD": 191362, "EUR": 1268}
 
 # ============== PORTFOLIO 2: SCHWAB 1 ==============
+# Reconciled to Schwab Positions 10.12.2026 (Total cost basis $361,404.03, MV $666,744.65).
 SCHWAB1_HOLDINGS = {
     "BN": {"name": "Brookfield Corp F Class A", "qty": 3000, "cost": 60860},
-    "CNR": {"name": "Core Natural Resources", "qty": 1108, "cost": 82985},
-    "PNPFF": {"name": "Pinetree Capital Ltd", "qty": 5700, "cost": 47502},
+    "CNR": {"name": "Core Natural Resources", "qty": 999, "cost": 71996},  # was 1108 @ 82985
+    # PNPFF (Pinetree) no longer held per 10.12.2026.
     "SOC": {"name": "Sable Offshore Corp", "qty": 0, "cost": 0},  # Stock position shows dash
     "TAVHY": {"name": "TAV Havalimanlari", "qty": 7000, "cost": 110847},
     "TDW": {"name": "Tidewater Inc", "qty": 0, "cost": 0},  # Stock position shows dash
     "TOITF": {"name": "Topicus.com Inc", "qty": 500, "cost": 25003},
 }
 SCHWAB1_OPTIONS = {
-    "SOC": {"name": "Call Sable Offshore JAN28 $10", "contracts": 50, "cost": 11383, "strike": 10, "expiry": "21.01.2028", "market_value": 17600},
-    "TDW": {"name": "Call Tidewater JAN27 $60", "contracts": 100, "cost": 81315, "strike": 60, "expiry": "15.01.2027", "market_value": 126000},
+    "SOC": {"name": "Call Sable Offshore JAN28 $10", "contracts": 50, "cost": 11383, "strike": 10, "expiry": "21.01.2028", "market_value": 2775},  # 10.12 mark $0.555
+    "TDW": {"name": "Call Tidewater JAN27 $60", "contracts": 100, "cost": 81315, "strike": 60, "expiry": "15.01.2027", "market_value": 273500},  # 10.12 mark $27.35
 }
-SCHWAB1_CASH = {"USD": -129910}  # Margin balance per 25.06.2026 statement
+SCHWAB1_CASH = {"USD": -124741}  # Cash & Cash Investments (margin) per 10.12.2026 Positions
 
 # ============== PORTFOLIO 3: SCHWAB 2 ==============
-# Reconciled to Schwab Positions 10.09.2026. Cost bases tie to Schwab Total cost basis $1,907,071.75.
+# Reconciled to Schwab Positions 10.12.2026. Cost bases tie to Schwab Total cost basis $2,281,090.90.
 SCHWAB2_HOLDINGS = {
     "UBER": {"name": "Uber Technologies", "qty": 3500, "cost": 243042},
     "MSFT": {"name": "Microsoft Corp", "qty": 500, "cost": 186335},
-    "AMR": {"name": "Alpha Metallurgical Resources", "qty": 1000, "cost": 166129},
+    "AMR": {"name": "Alpha Metallurgical Resources", "qty": 1250, "cost": 209904},  # was 1000 @ 166129
     "CNR": {"name": "Core Natural Resources", "qty": 2000, "cost": 164540},
     "META": {"name": "Meta Platforms Inc", "qty": 300, "cost": 164700},
     "AMZN": {"name": "Amazon.com Inc", "qty": 700, "cost": 160202},
     "PDD": {"name": "PDD Holdings ADR", "qty": 2000, "cost": 169970},
-    "MIAX": {"name": "Miami Intl Holdings Inc", "qty": 3513.8523, "cost": 143105},
+    "MIAX": {"name": "Miami Intl Holdings Inc", "qty": 6000.0023, "cost": 235530},  # was 3513.8523 @ 143105
     "KSPI": {"name": "Kaspi KZ JSC", "qty": 1500, "cost": 122000},
+    "TPB": {"name": "Turning Point Brands Inc", "qty": 2500, "cost": 161020},  # new on 10.12.2026 Positions
     "TOITF": {"name": "Topicus.com Inc", "qty": 2000, "cost": 136486},
     "TAVHY": {"name": "TAV Havalimanlari", "qty": 5000, "cost": 112227},
     "TME": {"name": "Tencent Music Entmt", "qty": 10000, "cost": 88850},
@@ -115,10 +119,10 @@ SCHWAB2_HOLDINGS = {
     # METC (Ramaco) stock line shows 0 shares / dash — held only via the call below.
 }
 SCHWAB2_OPTIONS = {
-    "METC": {"name": "Call Ramaco Res JAN28 $8", "contracts": 75, "cost": 32300, "strike": 8, "expiry": "21.01.2028", "market_value": 43500},  # 10.09 mark $5.80
+    "METC": {"name": "Call Ramaco Res JAN28 $8", "contracts": 300, "cost": 109099, "strike": 8, "expiry": "21.01.2028", "market_value": 101250},  # 10.12 mark $3.375 (was 75 ct @ 32300)
 }
 SCHWAB2_TBILLS = {}  # No fixed income
-SCHWAB2_CASH = {"USD": -449991}  # Cash & Cash Investments (margin) per 10.09.2026 Positions
+SCHWAB2_CASH = {"USD": -914895}  # Cash & Cash Investments (margin) per 10.12.2026 Positions
 
 # ============== PORTFOLIO 4: MORGAN STANLEY ==============
 # Reconciled to Morgan Stanley holdings 10.09.2026 (Total Cost $392,120.58, MV $846,706.98)
@@ -772,6 +776,9 @@ def generate_html(prices):
         <div class="header-row">
             <span class="update-time">Last Updated: {today} at {update_time}</span>
             <button class="update-btn" onclick="updatePrices()">Update Prices</button>
+            <a href="/tax" class="update-btn" style="text-decoration:none;">Tax Planner</a>
+            <a href="/str" class="update-btn" style="text-decoration:none;">RE Shelter</a>
+            <a href="/markets" class="update-btn" style="text-decoration:none;">STR Markets</a>
         </div>
 
         <div class="portfolio-header">
@@ -886,6 +893,618 @@ def generate_html(prices):
     return html
 
 
+# --- Family Tax Planner page ----------------------------------------------
+# Self-contained interactive page at /tax. All defaults are the reconciled
+# 2026 numbers; edit them here (like the holdings above) when statements
+# change, or tweak live in the browser for what-if planning.
+def generate_tax_html():
+    return r"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Family Tax Planner 2026</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%); min-height:100vh; padding:20px; color:#e0e0e0; }
+.container { max-width:1500px; margin:0 auto; }
+h1 { text-align:center; color:#00d4ff; margin-bottom:6px; font-size:2em; }
+.sub { text-align:center; color:#888; font-size:.85em; margin-bottom:18px; }
+a.back { color:#00d4ff; text-decoration:none; font-size:.9em; }
+.levers { background:rgba(255,255,255,.05); border:1px solid rgba(0,212,255,.3); border-radius:12px; padding:18px; margin-bottom:18px; }
+.levers h2 { color:#00d4ff; font-size:1em; text-transform:uppercase; letter-spacing:1px; margin-bottom:14px; }
+.lever { margin-bottom:14px; }
+.lever label { display:block; font-size:.85em; color:#bbb; margin-bottom:4px; }
+.lever .val { color:#00ff88; font-weight:bold; font-family:'SF Mono',Monaco,monospace; }
+input[type=range] { width:100%; accent-color:#00d4ff; }
+input[type=number] { background:rgba(255,255,255,.08); border:1px solid rgba(0,212,255,.3); color:#e0e0e0;
+  border-radius:6px; padding:5px 8px; width:120px; font-family:'SF Mono',Monaco,monospace; font-size:.85em; }
+.toggles { display:flex; gap:24px; flex-wrap:wrap; margin-top:6px; }
+.toggles label { font-size:.85em; color:#bbb; cursor:pointer; }
+.family { background:linear-gradient(135deg,#00d4ff22,#0099cc22); border:2px solid #00d4ff; border-radius:12px;
+  padding:18px; margin-bottom:20px; text-align:center; }
+.family .big { font-size:2.4em; color:#00d4ff; font-weight:bold; font-family:'SF Mono',Monaco,monospace; }
+.family .saved { color:#00ff88; font-size:1em; margin-top:6px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(360px,1fr)); gap:16px; }
+.panel { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:18px; }
+.panel h2 { color:#00d4ff; font-size:1.1em; margin-bottom:4px; }
+.panel .owe { font-size:1.8em; font-weight:bold; font-family:'SF Mono',Monaco,monospace; margin-bottom:12px; }
+.row { display:flex; justify-content:space-between; align-items:center; padding:3px 0; font-size:.85em; }
+.row label { color:#aaa; }
+.grp { color:#00d4ff; font-size:.72em; text-transform:uppercase; letter-spacing:1px; margin:12px 0 4px; border-bottom:1px solid rgba(0,212,255,.2); padding-bottom:3px; }
+.out { border-top:1px dashed rgba(255,255,255,.15); margin-top:10px; padding-top:8px; }
+.out .row { font-family:'SF Mono',Monaco,monospace; }
+.pos { color:#00ff88; } .neg { color:#ff4757; } .mut { color:#888; font-size:.78em; }
+.note { font-size:.78em; color:#e0b000; margin-top:8px; }
+.warn { background:rgba(255,71,87,.12); border:1px solid #ff4757; border-radius:8px; padding:10px; margin-top:12px; font-size:.82em; }
+</style>
+</head>
+<body>
+<div class="container">
+<div style="text-align:left;margin-bottom:8px;"><a class="back" href="/">&larr; Portfolio</a> &nbsp;|&nbsp; <a class="back" href="/str">RE Shelter Planner</a> &nbsp;|&nbsp; <a class="back" href="/markets">STR Markets</a></div>
+<h1>Family Tax Planner &mdash; 2026</h1>
+<div class="sub">Planning estimate (2025 brackets). Not a filed return. Pabrai figures are an estimate until the 2026 K-1 arrives.</div>
+
+<div class="levers">
+<h2>Master Levers</h2>
+<div class="lever">
+  <label>Trustee fee (Trust &rarr; Leon): <span class="val" id="feeV"></span></label>
+  <input type="range" id="feeR" min="0" max="400000" step="1000" oninput="document.getElementById('fee').value=this.value;calc()">
+  <input type="number" id="fee" value="168300" oninput="document.getElementById('feeR').value=this.value;calc()">
+</div>
+<div class="toggles">
+  <label><input type="checkbox" id="seTax" onchange="calc()"> Trustee fee is self-employment income (+ SE/Medicare tax)</label>
+</div>
+<div class="mut" style="margin-top:8px;">Gains sent to Josh are set in his panel (short-term / long-term), with live harvesting headroom.</div>
+</div>
+
+<div class="family">
+  <div class="mut" style="text-transform:uppercase;letter-spacing:1px;">Total Family Federal Tax</div>
+  <div class="big" id="famTax">$0</div>
+  <div id="famDue" style="color:#e0e0e0;font-size:.95em;margin-top:4px;"></div>
+  <div class="saved" id="saved"></div>
+</div>
+
+<div class="grid">
+
+<div class="panel">
+  <h2>Leon &amp; Lisa <span class="mut">(MFJ)</span></h2>
+  <div class="owe" id="llOwe">$0</div>
+  <div class="grp">Income</div>
+  <div class="row"><label>Lisa wages (W-2)</label><input type="number" id="ll_wages" value="104090" oninput="calc()"></div>
+  <div class="row"><label>Leon consulting (LB Ed)</label><input type="number" id="ll_consult" value="0" oninput="calc()"></div>
+  <div class="row"><label>Trustee fee (from lever)</label><span id="ll_fee" class="mut"></span></div>
+  <div class="row"><label>Personal Schwab ST gain</label><input type="number" id="ll_st" value="34502" oninput="calc()"></div>
+  <div class="row"><label>Personal Schwab LT gain</label><input type="number" id="ll_lt" value="0" oninput="calc()"></div>
+  <div class="row"><label>Interest / dividends</label><input type="number" id="ll_divint" value="2091" oninput="calc()"></div>
+  <div class="row"><label>House sale taxable gain</label><input type="number" id="ll_house" value="0" oninput="calc()"></div>
+  <div class="grp">Deduction (uses the larger of standard or itemized)</div>
+  <div class="row"><label>Standard deduction (MFJ)</label><input type="number" id="ll_ded" value="31500" oninput="calc()"></div>
+  <div class="row"><label>Itemized: mortgage/SALT/charity</label><input type="number" id="ll_item" value="25848" oninput="calc()"></div>
+  <div class="row"><label>Personal Schwab margin interest</label><input type="number" id="ll_margin" value="4725" oninput="calc()"></div>
+  <div class="mut">Margin interest = investment-interest expense; only helps if itemizing beats the standard deduction.</div>
+  <div class="grp">Credits</div>
+  <div class="row"><label>Child tax credit (kids under 17)</label><input type="number" id="ll_ctc" value="4000" oninput="calc()"></div>
+  <div class="mut">$2,000/child (2024). Phases out over $400k MAGI. 2025 may be $2,200/child.</div>
+  <div class="grp">Payments already made</div>
+  <div class="row"><label>Lisa withholding (paycheck)</label><input type="number" id="ll_wh" value="12448" oninput="calc()"></div>
+  <div class="row"><label>Leon estimated payments made</label><input type="number" id="ll_est" value="0" oninput="calc()"></div>
+  <div class="out" id="ll_out"></div>
+</div>
+
+<div class="panel">
+  <h2>JKL Trust</h2>
+  <div class="owe" id="trOwe">$0</div>
+  <div class="grp">Income &mdash; own accounts</div>
+  <div class="row"><label>Interest (Schwab)</label><input type="number" id="t_int" value="1473" oninput="calc()"></div>
+  <div class="row"><label>Dividends (MS)</label><input type="number" id="t_div" value="3910" oninput="calc()"></div>
+  <div class="row"><label>Net short-term gain</label><input type="number" id="t_st" value="-2963" oninput="calc()"></div>
+  <div class="row"><label>Net long-term gain</label><input type="number" id="t_lt" value="6950" oninput="calc()"></div>
+  <div class="row"><label>Loan interest received (Leon/CKS notes)</label><input type="number" id="t_loanint" value="0" oninput="calc()"></div>
+  <div class="grp">Income &mdash; Pabrai K-1 (estimate)</div>
+  <div class="row"><label>Interest</label><input type="number" id="p_int" value="1334" oninput="calc()"></div>
+  <div class="row"><label>Dividends</label><input type="number" id="p_div" value="20359" oninput="calc()"></div>
+  <div class="row"><label>Short-term gain</label><input type="number" id="p_st" value="30323" oninput="calc()"></div>
+  <div class="row"><label>Long-term gain</label><input type="number" id="p_lt" value="155664" oninput="calc()"></div>
+  <div class="grp">Deductions</div>
+  <div class="row"><label>Trustee fee (from lever)</label><span id="t_fee" class="mut"></span></div>
+  <div class="row"><label>Margin interest</label><input type="number" id="t_margin" value="9276" oninput="calc()"></div>
+  <div class="row"><label>Advisory fee</label><input type="number" id="t_adv" value="3490" oninput="calc()"></div>
+  <div class="row"><label>Legal (Perlman)</label><input type="number" id="t_legal" value="3501" oninput="calc()"></div>
+  <div class="row"><label>Accounting (Perrysimon)</label><input type="number" id="t_acct" value="11000" oninput="calc()"></div>
+  <div class="out" id="tr_out"></div>
+  <div class="mut" style="margin-top:6px;">CKS car loan $63,333 = asset (not deducted).</div>
+</div>
+
+<div class="panel">
+  <h2>Joshua Brill <span class="mut">(Single)</span></h2>
+  <div class="owe" id="jOwe">$0</div>
+  <div class="grp">Received so far (locked)</div>
+  <div class="row"><label>Short-term gain received</label><input type="number" id="j_st_r" value="0" oninput="calc()"></div>
+  <div class="row"><label>Long-term gain received</label><input type="number" id="j_lt_r" value="21483" oninput="calc()"></div>
+  <div class="row" style="color:#00ff88;font-weight:bold;"><label style="color:#00ff88;">Est. tax on amount received (locked)</label><span id="j_tax_r"></span></div>
+  <div class="grp">Additional expected (planning)</div>
+  <div class="row"><label>More short-term gain</label><input type="number" id="j_st_a" value="0" oninput="calc()"></div>
+  <div class="row"><label>More long-term gain</label><input type="number" id="j_lt_a" value="0" oninput="calc()"></div>
+  <div class="grp">Other / deduction</div>
+  <div class="row"><label>Other income</label><input type="number" id="j_other" value="0" oninput="calc()"></div>
+  <div class="row"><label>Itemized (mortgage + SALT)</label><input type="number" id="j_ded" value="34315" oninput="calc()"></div>
+  <div class="out" id="j_out"></div>
+  <div id="j_headroom" style="background:rgba(0,255,136,.1);border:1px solid #00ff88;border-radius:8px;padding:10px;margin-top:12px;font-size:.82em;line-height:1.5;"></div>
+</div>
+
+</div>
+<div id="advice"></div>
+</div>
+
+<script>
+// ---- 2025 brackets (editable constants) ----
+var B = {
+  mfj:   { ord:[[23850,.10],[96950,.12],[206700,.22],[394600,.24],[501050,.32],[751600,.35],[1e15,.37]],
+           cg:[[96700,0],[600050,.15],[1e15,.20]], niit:250000 },
+  single:{ ord:[[11925,.10],[48475,.12],[103350,.22],[197300,.24],[250525,.32],[626350,.35],[1e15,.37]],
+           cg:[[48350,0],[533400,.15],[1e15,.20]], niit:200000 },
+  trust: { ord:[[3150,.10],[11450,.24],[15650,.35],[1e15,.37]],
+           cg:[[3250,0],[15900,.15],[1e15,.20]], niit:15650 }
+};
+function num(id){ return parseFloat(document.getElementById(id).value)||0; }
+function money(x){ return (x<0?'-$':'$')+Math.abs(Math.round(x)).toLocaleString('en-US'); }
+function bt(x,br){ var t=0,p=0; for(var i=0;i<br.length;i++){ var c=br[i][0],r=br[i][1]; if(x>p){t+=(Math.min(x,c)-p)*r;p=c;} else break; } return t; }
+function cgStack(ord,pref,br){ var t=0,p=0,s=ord,e=ord+pref; for(var i=0;i<br.length;i++){ var c=br[i][0],r=br[i][1]; var lo=Math.max(s,p),hi=Math.min(e,c); if(hi>lo)t+=(hi-lo)*r; p=c; if(p>=e)break; } return t; }
+function netCap(st,lt){ // -> {stOrd, ltPref, loss}
+  if(st>=0&&lt>=0) return {stOrd:st,ltPref:lt,loss:0};
+  if(st<0){ var nl=lt+st; return nl>=0?{stOrd:0,ltPref:nl,loss:0}:{stOrd:0,ltPref:0,loss:nl}; }
+  var ns=st+lt; return ns>=0?{stOrd:ns,ltPref:0,loss:0}:{stOrd:0,ltPref:0,loss:ns};
+}
+// generic filer: ordinary (fully-ordinary $), pref (qual div + LT), deduction, brackets, nii
+function filer(ordinary,pref,ded,br,nii,se){
+  var ordTax0=Math.max(0,ordinary-ded);
+  var excess=Math.max(0,ded-ordinary);
+  var prefTax0=Math.max(0,pref-excess);
+  var taxable=ordTax0+prefTax0;
+  var ordTax=bt(ordTax0,br.ord);
+  var cgTax=cgStack(ordTax0,prefTax0,br.cg);
+  var magi=ordinary+pref;
+  var niit=0.038*Math.max(0,Math.min(nii,magi-br.niit));
+  return {taxable:taxable, ord:ordTax, cg:cgTax, niit:niit, se:(se||0), tax:ordTax+cgTax+niit+(se||0), ordTax0:ordTax0, prefTax0:prefTax0};
+}
+
+function scenario(fee,seOn){
+  // ---- TRUST ----
+  var trustInt=num('t_int')+num('p_int')+num('t_loanint');
+  var trustDiv=num('t_div')+num('p_div');           // treat dividends as qualified (preferential)
+  var trustST=num('t_st')+num('p_st');
+  var trustLT=num('t_lt')+num('p_lt');
+  var trustDed=fee+num('t_margin')+num('t_adv')+num('t_legal')+num('t_acct');
+  var cap=netCap(trustST,trustLT);
+  var trustOrd=trustInt+cap.stOrd;                  // ordinary-rate income
+  var trustPref=trustDiv+cap.ltPref;                // qualified div + LT gain
+  var ordAfter=Math.max(0,trustOrd-trustDed);
+  var excessDed=Math.max(0,trustDed-trustOrd);
+  var prefAfter=Math.max(0,trustPref-excessDed);
+  // gains sent to Josh reduce the trust's retained income (distribution deduction):
+  // short-term off the ordinary bucket, long-term off the preferential bucket
+  var jstR=num('j_st_r'), jltR=num('j_lt_r'), jstA=num('j_st_a'), jltA=num('j_lt_a');
+  var jst=jstR+jstA, jlt=jltR+jltA;
+  var trOrd=Math.max(0,ordAfter-jst);
+  var trPref=Math.max(0,prefAfter-jlt);
+  var ex=100; var trOrdT=Math.max(0,trOrd-ex); var exRem=Math.max(0,ex-trOrd); var trPrefT=Math.max(0,trPref-exRem);
+  var trOrdTax=bt(trOrdT,B.trust.ord);
+  var trCg=cgStack(trOrdT,trPrefT,B.trust.cg);
+  var trNII=trOrdT+trPrefT;
+  var trNiit=0.038*Math.max(0,trNII-B.trust.niit);
+  var trustTax=trOrdTax+trCg+trNiit;
+
+  // ---- JOSH ---- (short-term = ordinary, long-term = preferential)
+  var josh=filer(jst+num('j_other'),jlt,num('j_ded'),B.single,jst+jlt,0);
+  var joshR=filer(jstR+num('j_other'),jltR,num('j_ded'),B.single,jstR+jltR,0);
+
+  // ---- LEON & LISA ----
+  var llOrd=num('ll_wages')+num('ll_consult')+fee+Math.max(0,num('ll_st'))+num('ll_divint');
+  var llPref=Math.max(0,num('ll_lt'))+num('ll_house');
+  var seV=seOn?(fee*0.9235*0.029):0;                // Medicare portion (over SS wage base)
+  var llNII=num('ll_divint')+Math.max(0,num('ll_st'))+Math.max(0,num('ll_lt'));
+  var marginDed=Math.min(num('ll_margin'),llNII);   // investment interest limited to net investment income
+  var itemized=num('ll_item')+marginDed;
+  var llDed=Math.max(num('ll_ded'),itemized);
+  var ll=filer(llOrd,llPref,llDed,B.mfj,llNII,seV);
+  ll.dedUsed=llDed; ll.itemizing=(itemized>num('ll_ded'));
+  var ctc=num('ll_ctc'); var llMagi=llOrd+llPref;
+  if(llMagi>400000){ ctc=Math.max(0, ctc-50*Math.ceil((llMagi-400000)/1000)); }
+  ll.ctc=ctc;
+  ll.tax=Math.max(0,ll.ord+ll.cg-ctc)+ll.niit+ll.se;
+
+  return {trust:{tax:trustTax,ord:trOrdTax,cg:trCg,niit:trNiit,taxable:trOrdT+trPrefT},
+          josh:josh, joshR:joshR, ll:ll, family:trustTax+josh.tax+ll.tax, jst:jst, jlt:jlt, jstR:jstR, jltR:jltR};
+}
+
+function calc(){
+  var fee=num('fee');
+  var seOn=document.getElementById('seTax').checked;
+  document.getElementById('feeV').textContent=money(fee);
+  document.getElementById('feeR').value=fee;
+  document.getElementById('ll_fee').textContent=money(fee);
+  document.getElementById('t_fee').textContent=money(fee);
+
+  var s=scenario(fee,seOn);
+  var llWh=num('ll_wh'), llEst=num('ll_est');
+  var llDue=s.ll.tax-llWh-llEst;
+
+  document.getElementById('famTax').textContent=money(s.family);
+  document.getElementById('famDue').textContent="After Lisa's withholding & estimates: "+money(s.family-llWh-llEst)+" to pay";
+  document.getElementById('saved').textContent='';
+
+  document.getElementById('llOwe').textContent=money(llDue);
+  document.getElementById('trOwe').textContent=money(s.trust.tax);
+  document.getElementById('jOwe').textContent=money(s.josh.tax);
+
+  document.getElementById('ll_out').innerHTML=
+    row('Deduction used ('+(s.ll.itemizing?'itemized':'standard')+')',s.ll.dedUsed)+row('Taxable income',s.ll.taxable)+row('Ordinary tax',s.ll.ord)+row('Cap-gains tax',s.ll.cg)+row('NIIT (3.8%)',s.ll.niit)+(s.ll.se>0?row('SE/Medicare',s.ll.se):'')+(s.ll.ctc>0?row('Less: child tax credit',-s.ll.ctc):'')+rowB('Total tax',s.ll.tax)+row('Less: Lisa withholding',-llWh)+(llEst>0?row('Less: estimated payments',-llEst):'')+rowB('Balance due',llDue);
+  document.getElementById('tr_out').innerHTML=
+    row('Gain kept in trust',s.trust.taxable)+row('Ordinary tax',s.trust.ord)+row('Cap-gains tax',s.trust.cg)+row('NIIT (3.8%)',s.trust.niit)+rowB('Total tax',s.trust.tax);
+
+  document.getElementById('j_tax_r').textContent=money(s.joshR.tax);
+  var jtot=s.jst+s.jlt;
+  var blended=jtot>0?(s.josh.tax/jtot*100):0;
+  var addlTax=s.josh.tax-s.joshR.tax;
+  document.getElementById('j_out').innerHTML=
+    row('Total short-term (recd + planned)',s.jst)+row('Total long-term (recd + planned)',s.jlt)+row('Taxable income',s.josh.taxable)+row('Tax on received (locked)',s.joshR.tax)+row('Added tax from planned',addlTax)+rowB('Total tax',s.josh.tax)+rowP('Blended rate (total)',blended);
+
+  // Harvesting headroom
+  var stRoom=Math.max(0,82790-s.jst);
+  var totalRoom=Math.max(0,200000-jtot);
+  var hr='<b>Harvesting headroom</b><br>Josh: <b>'+blended.toFixed(1)+'%</b> blended on '+money(jtot)+' of gains.<br>';
+  hr+='&bull; Trust can still realize &amp; send Josh <b>'+money(totalRoom)+'</b> more before his NIIT line ($200k) &mdash; keeps him ~8&ndash;12%.<br>';
+  hr+='&bull; Of that, keep <b>short-term under '+money(stRoom)+'</b> (stays &le;12%); send the rest as <b>long-term</b>.';
+  if(jtot>200000){ hr+='<br><span style="color:#ff4757;">&bull; Over $200k &mdash; Josh now pays 3.8% NIIT on the excess.</span>'; }
+  document.getElementById('j_headroom').innerHTML=hr;
+}
+function row(l,v){ return '<div class="row"><label>'+l+'</label><span>'+money(v)+'</span></div>'; }
+function rowB(l,v){ return '<div class="row" style="font-weight:bold;color:#00d4ff;border-top:1px solid rgba(0,212,255,.25);margin-top:4px;padding-top:4px;"><label style="color:#00d4ff;">'+l+'</label><span>'+money(v)+'</span></div>'; }
+function rowP(l,v){ return '<div class="row" style="font-weight:bold;color:#00ff88;border-top:1px solid rgba(0,255,136,.25);margin-top:4px;padding-top:4px;"><label style="color:#00ff88;">'+l+'</label><span>'+v.toFixed(1)+'%</span></div>'; }
+calc();
+</script>
+</body>
+</html>"""
+
+
+# --- STR Market Comparison page --------------------------------------------
+def generate_markets_html():
+    return r"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STR Market Comparison</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%); min-height:100vh; padding:20px; color:#e0e0e0; }
+.container { max-width:1500px; margin:0 auto; }
+h1 { text-align:center; color:#00d4ff; margin-bottom:6px; font-size:2em; }
+.sub { text-align:center; color:#888; font-size:.85em; margin-bottom:16px; }
+a.back { color:#00d4ff; text-decoration:none; font-size:.9em; }
+.controls { display:flex; gap:16px; flex-wrap:wrap; justify-content:center; margin-bottom:14px; align-items:center; }
+.controls label { font-size:.82em; color:#aaa; margin-right:4px; }
+select { background:rgba(255,255,255,.08); border:1px solid rgba(0,212,255,.3); color:#e0e0e0; border-radius:6px; padding:6px 10px; font-size:.85em; }
+.legend { text-align:center; font-size:.78em; color:#888; margin-bottom:10px; }
+.badge { padding:2px 8px; border-radius:10px; font-size:.75em; font-weight:bold; white-space:nowrap; }
+.great { background:rgba(0,255,136,.15); color:#00ff88; border:1px solid #00ff88; }
+.workable { background:rgba(224,176,0,.15); color:#e0b000; border:1px solid #e0b000; }
+.avoid { background:rgba(255,71,87,.15); color:#ff4757; border:1px solid #ff4757; }
+.tablewrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; background:rgba(255,255,255,.03); border-radius:10px; overflow:hidden; }
+th,td { padding:8px 10px; text-align:left; border-bottom:1px solid rgba(255,255,255,.06); font-size:.84em; white-space:nowrap; }
+th { background:rgba(0,212,255,.1); color:#00d4ff; text-transform:uppercase; font-size:.7em; cursor:pointer; user-select:none; position:sticky; top:0; }
+th:hover { background:rgba(0,212,255,.2); }
+th::after { content:' \2195'; opacity:.3; }
+td.note { white-space:normal; color:#bbb; font-size:.8em; min-width:230px; }
+tr:hover td { background:rgba(255,255,255,.04); }
+.num { font-family:'SF Mono',Monaco,monospace; text-align:right; }
+.count { text-align:center; color:#888; font-size:.8em; margin-top:10px; }
+</style>
+</head>
+<body>
+<div class="container">
+<div style="margin-bottom:8px;"><a class="back" href="/">&larr; Portfolio</a> &nbsp;|&nbsp; <a class="back" href="/tax">Tax Planner</a> &nbsp;|&nbsp; <a class="back" href="/str">RE Shelter</a></div>
+<h1>STR Market Comparison</h1>
+<div class="sub">Non-owner-occupied investment STR (&le;7-day avg stays) across your target states. Click a column to sort; filter by state/tier. Verify any specific parcel before buying &mdash; rules change fast.</div>
+
+<div class="controls">
+  <div><label>State</label><select id="fState" onchange="render()"><option value="">All</option></select></div>
+  <div><label>Verdict</label><select id="fTier" onchange="render()"><option value="">All</option><option value="great">Great</option><option value="workable">Workable</option><option value="avoid">Avoid</option></select></div>
+</div>
+<div class="legend"><span class="badge great">GREAT</span> non-owner STR clearly legal + good economics &nbsp; <span class="badge workable">WORKABLE</span> legal but zone/cap/fee caveat &nbsp; <span class="badge avoid">AVOID</span> banned / capped-out / min-stay</div>
+
+<div class="tablewrap">
+<table>
+<thead><tr>
+<th onclick="sortBy('m')">Market</th>
+<th onclick="sortBy('s')">State</th>
+<th onclick="sortBy('it')">State inc. tax</th>
+<th onclick="sortBy('tier')">Verdict</th>
+<th onclick="sortBy('pt')">Property tax /$1M</th>
+<th onclick="sortBy('lt')">Lodging tax</th>
+<th onclick="sortBy('ins')">Insurance</th>
+<th onclick="sortBy('note')">Notes</th>
+</tr></thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+<div class="count" id="count"></div>
+</div>
+
+<script>
+var DATA=[
+{m:"Orlando/Kissimmee-Davenport",s:"FL",it:0,tier:"great",pt:18,lt:13.5,ins:"Low",note:"Year-round Disney demand, inland low insurance. Top overall pick."},
+{m:"Fort Lauderdale",s:"FL",it:0,tier:"great",pt:19,lt:13,ins:"High",note:"No minimum stay, non-owner legal citywide, simple registration."},
+{m:"Cape Coral",s:"FL",it:0,tier:"great",pt:17,lt:12,ins:"High",note:"New 2026 registration, no min stay, canal-home demand."},
+{m:"Pensacola Beach",s:"FL",it:0,tier:"workable",pt:14,lt:12,ins:"High",note:"No min stay; lowest FL property tax; leased land; watch SRIA registry."},
+{m:"Anna Maria Island",s:"FL",it:0,tier:"workable",pt:16,lt:12.5,ins:"High",note:"Nightly OK; verify Holmes Beach 7-day vs 30-day zone."},
+{m:"City of Miami",s:"FL",it:0,tier:"workable",pt:20,lt:13,ins:"High",note:"Only T4/T5/T6 zones; T3 residential banned. Buy the zone."},
+{m:"Sarasota / Siesta Key",s:"FL",it:0,tier:"workable",pt:16,lt:12.5,ins:"High",note:"RMF multifamily only; single-family banned on the key."},
+{m:"Amelia Island",s:"FL",it:0,tier:"workable",pt:15,lt:12,ins:"Mod",note:"R-3 zone only (or grandfathered). Lower tax/insurance than S. FL."},
+{m:"Fort Myers Beach",s:"FL",it:0,tier:"workable",pt:17,lt:12,ins:"High",note:"Register + inspection; post-Ian rebuild market."},
+{m:"Miami Beach",s:"FL",it:0,tier:"avoid",pt:20,lt:17,ins:"High",note:"Residential ban + heavy fines; condo-hotel/RM-3 only."},
+{m:"Clearwater / St. Pete Beach",s:"FL",it:0,tier:"avoid",pt:19,lt:13,ins:"High",note:"30-31 day minimum in residential zones."},
+{m:"Sanibel",s:"FL",it:0,tier:"avoid",pt:17,lt:12,ins:"High",note:"~4-week minimum stay."},
+{m:"Florida Keys",s:"FL",it:0,tier:"avoid",pt:18,lt:13,ins:"High",note:"28-day minimum + hard caps."},
+{m:"Naples (city)",s:"FL",it:0,tier:"avoid",pt:18,lt:12,ins:"High",note:"30-day minimum; 3 short rentals/yr."},
+{m:"Daytona / Volusia",s:"FL",it:0,tier:"avoid",pt:18,lt:12.5,ins:"High",note:"County ban; tourist districts only; $15k fines."},
+{m:"Teton Village",s:"WY",it:0,tier:"great",pt:4,lt:5,ins:"Mod",note:"Approved resort zone; best tax combo on the board; elite/pricey."},
+{m:"Cody",s:"WY",it:0,tier:"great",pt:6,lt:7,ins:"Mod",note:"Legal most city zones (not R-2); Yellowstone east gate."},
+{m:"Alpine / Star Valley",s:"WY",it:0,tier:"workable",pt:5,lt:7,ins:"Mod",note:"Legal but 2026 rules tightening; check exact town."},
+{m:"Pinedale",s:"WY",it:0,tier:"workable",pt:5,lt:7,ins:"Mod",note:"County only (town banned new STRs); thin seasonal market."},
+{m:"Town of Jackson",s:"WY",it:0,tier:"avoid",pt:4,lt:5,ins:"Mod",note:"60-night cap outside Lodging Overlay."},
+{m:"Teton County (general)",s:"WY",it:0,tier:"avoid",pt:4,lt:5,ins:"Mod",note:"STR only in named resort zones; otherwise banned."},
+{m:"Vail",s:"CO",it:4.4,tier:"great",pt:5,lt:10.5,ins:"Mod",note:"Uncapped, town-wide; +$1,200/bedroom/yr fee; two seasons."},
+{m:"Keystone",s:"CO",it:4.4,tier:"great",pt:5,lt:12,ins:"Mod",note:"No cap, $285/yr. Best-in-Summit for investors."},
+{m:"Dillon",s:"CO",it:4.4,tier:"great",pt:5,lt:12,ins:"Mod",note:"No cap, no waitlist."},
+{m:"Copper Mountain",s:"CO",it:4.4,tier:"great",pt:5,lt:16,ins:"Mod",note:"No cap; +4% CMRA surcharge; mostly condos, check HOA."},
+{m:"Mountain Village (Telluride)",s:"CO",it:4.4,tier:"great",pt:5,lt:14.7,ins:"Mod",note:"No cap, no dedicated STR tax. Rare fully-open resort."},
+{m:"Mt. Crested Butte",s:"CO",it:4.4,tier:"great",pt:5,lt:14,ins:"Mod",note:"No cap, no zoning restriction."},
+{m:"Grand Lake",s:"CO",it:4.4,tier:"great",pt:5,lt:12,ins:"Mod",note:"No cap; summer-heavy seasonal demand (west of RMNP)."},
+{m:"Breckenridge",s:"CO",it:4.4,tier:"workable",pt:5,lt:12.3,ins:"Mod",note:"Resort Zone / Zone 1 only; Zone 2/3 capped-out."},
+{m:"Steamboat Springs",s:"CO",it:4.4,tier:"workable",pt:5,lt:18.4,ins:"Mod",note:"Green overlay zone only; punitive 9% STR tax."},
+{m:"Winter Park / Fraser",s:"CO",it:4.4,tier:"workable",pt:5,lt:12,ins:"Mod",note:"No cap; steep per-bedroom workforce fees ($350-400/bdrm)."},
+{m:"Silverthorne",s:"CO",it:4.4,tier:"workable",pt:5,lt:13,ins:"Mod",note:"3-zone cap; confirm capacity before buying."},
+{m:"Glenwood Springs",s:"CO",it:4.4,tier:"workable",pt:5,lt:11.6,ins:"Mod",note:"Under 5% cap now; 250-ft buffer between STRs; year-round."},
+{m:"Estes Park",s:"CO",it:4.4,tier:"workable",pt:5,lt:11.5,ins:"High",note:"Residential license by lottery; unhosted now allowed."},
+{m:"Durango",s:"CO",it:4.4,tier:"workable",pt:5,lt:14.65,ins:"Mod",note:"Allowed zones only; EN-1/EN-2 capped; buy commercial/mixed-use."},
+{m:"Frisco",s:"CO",it:4.4,tier:"avoid",pt:5,lt:13,ins:"Mod",note:"At cap, waitlist ~12-14 mo."},
+{m:"Boulder",s:"CO",it:4.4,tier:"avoid",pt:6,lt:0,ins:"Mod",note:"Owner-occupied primary residence only."},
+{m:"Telluride town (residential)",s:"CO",it:4.4,tier:"avoid",pt:5,lt:17.2,ins:"Mod",note:"29-night/yr cap in residential zone."},
+{m:"Crested Butte town",s:"CO",it:4.4,tier:"avoid",pt:5,lt:14,ins:"Mod",note:"Unlimited license hard-capped and scarce."},
+{m:"Big Sky",s:"MT",it:5.9,tier:"great",pt:19,lt:12,ins:"Wildfire",note:"Unincorporated, unregulated; premium ski. 1.9% property tax is the drag."},
+{m:"Kalispell / Flathead Lake",s:"MT",it:5.9,tier:"great",pt:6,lt:8,ins:"Wildfire",note:"Permissive; low property tax; lake + Glacier demand; dodge downtown cap."},
+{m:"Gardiner",s:"MT",it:5.9,tier:"great",pt:6,lt:11,ins:"High",note:"Permissive new county rules; buy detached (no shared wall); flood risk."},
+{m:"Whitefish",s:"MT",it:5.9,tier:"workable",pt:19,lt:8,ins:"Wildfire",note:"Resort zones (WRR/WRB) only; check covenants; insurance-heavy."},
+{m:"West Yellowstone",s:"MT",it:5.9,tier:"workable",pt:7,lt:11,ins:"Wildfire",note:"B-3 Central Business zone only."},
+{m:"Missoula",s:"MT",it:5.9,tier:"workable",pt:9,lt:8,ins:"Mod",note:"Zoned + registration (2026 code); year-round hub demand."},
+{m:"Red Lodge",s:"MT",it:5.9,tier:"workable",pt:19,lt:8,ins:"Mod",note:"20% cap; permit does NOT transfer on sale."},
+{m:"Bozeman",s:"MT",it:5.9,tier:"avoid",pt:19,lt:8,ins:"Mod",note:"Non-owner (Type 3) STRs banned since 2023."},
+{m:"St. George",s:"UT",it:4.55,tier:"great",pt:9,lt:6.5,ins:"Low",note:"STR overlay communities; lowest guest tax; year-round sun."},
+{m:"Brian Head",s:"UT",it:4.55,tier:"workable",pt:8,lt:10,ins:"Mod",note:"Broadly open, no cap; small, seasonal ski market."},
+{m:"Bryce Canyon area",s:"UT",it:4.55,tier:"workable",pt:10,lt:11,ins:"Low",note:"CUP-based, no cap; small seasonal market."},
+{m:"Park City / Summit",s:"UT",it:4.55,tier:"workable",pt:8,lt:9.55,ins:"Mod",note:"Resort Overlay or already-licensed condo only; SFH mostly banned."},
+{m:"Heber / Midway",s:"UT",it:4.55,tier:"workable",pt:10,lt:11,ins:"Mod",note:"TROD overlay only (boundaries shrank Sept 2026); Deer Valley East."},
+{m:"Ogden / Snowbasin",s:"UT",it:4.55,tier:"workable",pt:10,lt:12,ins:"Mod",note:"3-year ownership rule in residential; commercial zones only for fast start."},
+{m:"Moab",s:"UT",it:4.55,tier:"avoid",pt:9,lt:9.07,ins:"Low",note:"Ban / moratorium on new STRs."},
+{m:"Springdale / Zion",s:"UT",it:4.55,tier:"avoid",pt:10,lt:12,ins:"Low",note:"Commercial-only; 5 permits/yr in even-year March window."},
+{m:"Lake Arrowhead",s:"CA",it:13.3,tier:"great",pt:11,lt:7,ins:"Wildfire",note:"Uncapped, no owner-occ; only wide-open CA market. Budget wildfire insurance."},
+{m:"San Diego",s:"CA",it:13.3,tier:"workable",pt:11,lt:12.75,ins:"Low",note:"Tier 3 license, no day cap, but cap nearly exhausted; act fast."},
+{m:"Big Bear Lake",s:"CA",it:13.3,tier:"workable",pt:12,lt:13,ins:"Wildfire",note:"No cap (rare), 2/owner; high FAIR-Plan insurance erodes cash flow."},
+{m:"Mammoth Lakes",s:"CA",it:13.3,tier:"workable",pt:12,lt:15,ins:"Wildfire",note:"STR-zoned condos only (not SFH); highest guest tax (15%)."},
+{m:"Placer / North Tahoe",s:"CA",it:13.3,tier:"workable",pt:12,lt:10,ins:"Wildfire",note:"~500 permits left before a 30-night minimum triggers; closing fast."},
+{m:"Palm Springs",s:"CA",it:13.3,tier:"workable",pt:13,lt:11.5,ins:"Low",note:"20% neighborhood density cap; low insurance; winter/shoulder market."},
+{m:"South Lake Tahoe",s:"CA",it:13.3,tier:"avoid",pt:12,lt:14,ins:"Wildfire",note:"900 residential cap reached; waitlist only."},
+{m:"Truckee",s:"CA",it:13.3,tier:"avoid",pt:12,lt:13.25,ins:"Wildfire",note:"Capped; permits non-transferable; 365-day blackout after purchase."},
+{m:"Santa Barbara",s:"CA",it:13.3,tier:"avoid",pt:12,lt:12,ins:"Wildfire",note:"Whole-home non-owner STR being zoned/legislated out."},
+{m:"Napa",s:"CA",it:13.3,tier:"avoid",pt:12,lt:12,ins:"Wildfire",note:"Prohibited in unincorporated residential/ag zones."},
+{m:"Sonoma",s:"CA",it:13.3,tier:"avoid",pt:12,lt:12,ins:"Wildfire",note:"~91% of properties excluded; countywide cap near limit."},
+{m:"Monterey / Carmel",s:"CA",it:13.3,tier:"avoid",pt:12,lt:10.5,ins:"Wildfire",note:"Residential whole-home ban in progress."},
+{m:"Killington",s:"VT",it:8.75,tier:"great",pt:20,lt:13,ins:"Low",note:"Uncapped, no owner-occ; biggest Eastern ski. ~2% property tax is the knock."},
+{m:"Jay Peak",s:"VT",it:8.75,tier:"great",pt:17,lt:12,ins:"Low",note:"Least regulated VT town; thin $1M market, very seasonal."},
+{m:"Warren (Sugarbush)",s:"VT",it:8.75,tier:"workable",pt:19,lt:12,ins:"Low",note:"Allowed w/ registration; absentee-owner renewal discipline needed."},
+{m:"Manchester",s:"VT",it:8.75,tier:"workable",pt:17,lt:12,ins:"Low",note:"Village registers; Town unrestricted. Stratton + summer demand."},
+{m:"Winhall (Stratton)",s:"VT",it:8.75,tier:"workable",pt:15,lt:13,ins:"Low",note:"Legal, uncapped, but $500/bedroom annual fee."},
+{m:"Dover (Mount Snow)",s:"VT",it:8.75,tier:"workable",pt:15,lt:13,ins:"Low",note:"$125/yr, no cap; softer southern-VT demand."},
+{m:"Stowe",s:"VT",it:8.75,tier:"avoid",pt:14,lt:13,ins:"Low",note:"New non-resident licenses effectively banned (850 cap)."},
+{m:"Burlington",s:"VT",it:8.75,tier:"avoid",pt:16,lt:13,ins:"Mod",note:"Owner-occupied (primary residence) required."},
+{m:"Woodstock",s:"VT",it:8.75,tier:"avoid",pt:20,lt:12,ins:"Low",note:"Hard cap, full; highest property tax in VT."},
+{m:"Catskills - Hunter",s:"NY",it:10.9,tier:"great",pt:12.5,lt:10,ins:"Low",note:"Non-owner legal, no min-stay; 250-permit cap; ski + summer."},
+{m:"Thousand Islands / Alexandria Bay",s:"NY",it:10.9,tier:"great",pt:17,lt:11,ins:"Mod",note:"Very permissive; short summer season; self-remit 3% county tax."},
+{m:"Saratoga Springs",s:"NY",it:10.9,tier:"workable",pt:15,lt:15,ins:"Low",note:"Non-owner now legal but 150-night/yr cap; year-round demand."},
+{m:"Finger Lakes",s:"NY",it:10.9,tier:"workable",pt:12,lt:11,ins:"Low",note:"Town-by-town; pick a permissive town (some bans e.g. Skaneateles)."},
+{m:"Lake Placid",s:"NY",it:10.9,tier:"avoid",pt:14,lt:13,ins:"Low",note:"90-day cap + residential unhosted ban."},
+{m:"Lake George (town)",s:"NY",it:10.9,tier:"avoid",pt:15,lt:11.5,ins:"Mod",note:"Moratorium on new STRs."},
+{m:"Cooperstown",s:"NY",it:10.9,tier:"avoid",pt:16,lt:12,ins:"Low",note:"Owner-occupancy required in the village."},
+{m:"Hamptons / Montauk",s:"NY",it:10.9,tier:"avoid",pt:18,lt:13,ins:"High",note:"14-day minimum stay makes the loophole illegal."},
+{m:"Cape Cod (mid-Cape)",s:"MA",it:5,tier:"great",pt:7,lt:14.45,ins:"High",note:"Non-owner legal, lowest property tax; summer only; coastal insurance."},
+{m:"Berkshires",s:"MA",it:5,tier:"workable",pt:13,lt:11.7,ins:"Mod",note:"Legal but annual-day caps (Lenox 75, Great Barrington 150)."},
+{m:"Nantucket",s:"MA",it:5,tier:"avoid",pt:4,lt:14.45,ins:"High",note:"Entity-ownership ban + legal uncertainty."},
+{m:"Martha's Vineyard",s:"MA",it:5,tier:"avoid",pt:4,lt:14.45,ins:"High",note:"STR legality unsettled; too risky for a depreciation play."}
+];
+var sortKey="tier", sortDir=1;
+var tierRank={great:0,workable:1,avoid:2};
+function fmtMoney(k){ return k>0 ? "$"+k+"k" : "--"; }
+function fmtPct(p){ return p>0 ? p+"%" : "--"; }
+function populateStates(){
+  var sel=document.getElementById('fState'); var states=[];
+  DATA.forEach(function(d){ if(states.indexOf(d.s)<0) states.push(d.s); });
+  states.sort();
+  states.forEach(function(s){ var o=document.createElement('option'); o.value=s; o.textContent=s; sel.appendChild(o); });
+}
+function sortBy(k){ if(sortKey===k) sortDir=-sortDir; else { sortKey=k; sortDir=1; } render(); }
+function render(){
+  var fs=document.getElementById('fState').value, ft=document.getElementById('fTier').value;
+  var rows=DATA.filter(function(d){ return (!fs||d.s===fs) && (!ft||d.tier===ft); });
+  rows.sort(function(a,b){
+    var av,bv;
+    if(sortKey==='tier'){ av=tierRank[a.tier]; bv=tierRank[b.tier]; }
+    else { av=a[sortKey]; bv=b[sortKey]; }
+    if(typeof av==='string'){ return sortDir*av.localeCompare(bv); }
+    return sortDir*(av-bv);
+  });
+  var tb=document.getElementById('tbody'); tb.innerHTML='';
+  rows.forEach(function(d){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td>'+d.m+'</td><td>'+d.s+'</td><td class="num">'+(d.it===0?'0%':d.it+'%')+'</td>'
+      +'<td><span class="badge '+d.tier+'">'+d.tier.toUpperCase()+'</span></td>'
+      +'<td class="num">'+fmtMoney(d.pt)+'</td><td class="num">'+fmtPct(d.lt)+'</td><td>'+d.ins+'</td><td class="note">'+d.note+'</td>';
+    tb.appendChild(tr);
+  });
+  document.getElementById('count').textContent=rows.length+' markets shown';
+}
+populateStates(); render();
+</script>
+</body>
+</html>"""
+
+
+# --- Real Estate Shelter Planner page -------------------------------------
+def generate_str_html():
+    return r"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real Estate Shelter Planner</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%); min-height:100vh; padding:20px; color:#e0e0e0; }
+.container { max-width:1200px; margin:0 auto; }
+h1 { text-align:center; color:#00d4ff; margin-bottom:6px; font-size:2em; }
+.sub { text-align:center; color:#888; font-size:.85em; margin-bottom:18px; }
+a.back { color:#00d4ff; text-decoration:none; font-size:.9em; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:16px; }
+.panel { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:18px; margin-bottom:16px; }
+.panel h2 { color:#00d4ff; font-size:1.1em; margin-bottom:12px; }
+.row { display:flex; justify-content:space-between; align-items:center; padding:4px 0; font-size:.88em; }
+.row label { color:#aaa; }
+input[type=number] { background:rgba(255,255,255,.08); border:1px solid rgba(0,212,255,.3); color:#e0e0e0;
+  border-radius:6px; padding:5px 8px; width:130px; font-family:'SF Mono',Monaco,monospace; font-size:.85em; text-align:right; }
+.out .row { font-family:'SF Mono',Monaco,monospace; }
+.big { font-size:1.9em; font-weight:bold; font-family:'SF Mono',Monaco,monospace; color:#00ff88; }
+.card { background:linear-gradient(135deg,#00ff8822,#00cc6622); border:2px solid #00ff88; border-radius:12px; padding:16px; text-align:center; margin-bottom:16px; }
+.mut { color:#888; font-size:.8em; }
+.grp { color:#00d4ff; font-size:.72em; text-transform:uppercase; letter-spacing:1px; margin:10px 0 4px; border-bottom:1px solid rgba(0,212,255,.2); padding-bottom:3px; }
+.rowB { font-weight:bold; color:#00d4ff; border-top:1px solid rgba(0,212,255,.25); margin-top:4px; padding-top:4px; }
+.win { color:#00ff88; font-weight:bold; }
+</style>
+</head>
+<body>
+<div class="container">
+<div style="margin-bottom:8px;"><a class="back" href="/">&larr; Portfolio</a> &nbsp;|&nbsp; <a class="back" href="/tax">Tax Planner</a> &nbsp;|&nbsp; <a class="back" href="/markets">STR Markets</a></div>
+<h1>Real Estate Shelter Planner</h1>
+<div class="sub">Short-term rental + 100% bonus depreciation (2025). Planning estimate &mdash; confirm with your CPA.</div>
+
+<div class="card">
+  <div class="mut" style="text-transform:uppercase;letter-spacing:1px;">Year-1 tax saved</div>
+  <div class="big" id="saved">$0</div>
+  <div id="shelterLine" class="mut"></div>
+</div>
+
+<div class="grid">
+<div class="panel">
+  <h2>The property</h2>
+  <div class="row"><label>Purchase price</label><input type="number" id="price" value="1000000" oninput="calc()"></div>
+  <div class="row"><label>Down payment %</label><input type="number" id="downpct" value="25" oninput="calc()"></div>
+  <div class="row"><label>Land % (not depreciable)</label><input type="number" id="landpct" value="25" oninput="calc()"></div>
+  <div class="row"><label>Cost-seg % of building (bonus)</label><input type="number" id="segpct" value="25" oninput="calc()"></div>
+  <div class="row"><label>Mortgage rate %</label><input type="number" id="rate" value="7" oninput="calc()"></div>
+  <div class="row"><label>Annual rental income</label><input type="number" id="rental" value="50000" oninput="calc()"></div>
+  <div class="row"><label>Operating expenses (tax/ins/mgmt)</label><input type="number" id="opex" value="18000" oninput="calc()"></div>
+  <div class="out" id="prop_out" style="margin-top:8px;"></div>
+</div>
+
+<div class="panel">
+  <h2>Tax impact</h2>
+  <div class="row"><label>Your ordinary taxable income</label><input type="number" id="income" value="277483" oninput="calc()"></div>
+  <div class="out" id="tax_out" style="margin-top:8px;"></div>
+</div>
+</div>
+
+<div class="panel">
+  <h2>Right-size it &mdash; how much property to shelter a target</h2>
+  <div class="row"><label>Income you want to shelter</label><input type="number" id="rs_income" value="168300" oninput="calc()"></div>
+  <div class="out" id="rs_out" style="margin-top:8px;"></div>
+</div>
+
+<div class="panel">
+  <h2>Down payment: stocks vs. STR (10-year)</h2>
+  <div class="row"><label>Stock market return %/yr</label><input type="number" id="stockret" value="10" oninput="calc()"></div>
+  <div class="row"><label>Property appreciation %/yr</label><input type="number" id="apprec" value="4" oninput="calc()"></div>
+  <div class="out" id="cmp_out" style="margin-top:8px;"></div>
+  <div class="mut" style="margin-top:8px;">STR = your down payment + 10yr appreciation on the full price + ~mortgage paydown + year-1 tax saving reinvested. Leverage + the tax shelter are why the slice of cash in the STR typically outgrows the same cash in stocks &mdash; at the cost of effort, illiquidity, and leverage risk.</div>
+</div>
+</div>
+
+<script>
+var MFJ=[[23850,.10],[96950,.12],[206700,.22],[394600,.24],[501050,.32],[751600,.35],[1e15,.37]];
+function num(id){return parseFloat(document.getElementById(id).value)||0;}
+function money(x){return (x<0?'-$':'$')+Math.abs(Math.round(x)).toLocaleString('en-US');}
+function bt(x,br){var t=0,p=0;for(var i=0;i<br.length;i++){var c=br[i][0],r=br[i][1];if(x>p){t+=(Math.min(x,c)-p)*r;p=c;}else break;}return t;}
+function row(l,v){return '<div class="row"><label>'+l+'</label><span>'+money(v)+'</span></div>';}
+function rowB(l,v){return '<div class="row rowB"><label style="color:#00d4ff;">'+l+'</label><span>'+money(v)+'</span></div>';}
+
+function calc(){
+  var price=num('price'), downpct=num('downpct')/100, landpct=num('landpct')/100, segpct=num('segpct')/100;
+  var rate=num('rate')/100, rental=num('rental'), opex=num('opex');
+  var down=price*downpct, loan=price-down, building=price*(1-landpct);
+  var bonus=building*segpct;
+  var remBuilding=building-bonus, regDep=remBuilding/27.5*0.5;   // ~half-year
+  var interest=loan*rate;
+  var deductions=bonus+regDep+opex+interest;
+  var loss=Math.max(0,deductions-rental);                        // year-1 tax loss
+
+  document.getElementById('prop_out').innerHTML=
+    row('Down payment',down)+row('Mortgage',loan)+row('Building basis',building)
+    +'<div class="grp">Year-1 deductions</div>'
+    +row('Bonus depreciation (100%)',bonus)+row('Regular depreciation (~half yr)',regDep)+row('Mortgage interest',interest)+row('Operating expenses',opex)
+    +row('Less: rental income',-rental)+rowB('Year-1 tax loss',loss);
+
+  var income=num('income');
+  var taxBefore=bt(income,MFJ), taxAfter=bt(Math.max(0,income-loss),MFJ);
+  var saved=taxBefore-taxAfter, sheltered=Math.min(loss,income);
+  document.getElementById('saved').textContent=money(saved);
+  document.getElementById('shelterLine').textContent='Shelters '+money(sheltered)+' of income on '+money(down)+' down (controls '+money(price)+' of real estate)';
+  document.getElementById('tax_out').innerHTML=
+    row('Tax before shelter',taxBefore)+row('Tax after shelter',taxAfter)+rowB('Ordinary tax saved',saved)
+    +'<div class="mut" style="margin-top:6px;">Plus ~3.8% NIIT savings on any sheltered investment income (not shown).</div>';
+
+  // right-size
+  var lossPerDollar=price>0?loss/price:0.2;
+  var target=num('rs_income');
+  var propNeeded=lossPerDollar>0?target/lossPerDollar:0;
+  var downNeeded=propNeeded*downpct;
+  document.getElementById('rs_out').innerHTML=
+    row('STR purchase needed',propNeeded)+rowB('Down payment needed',downNeeded)
+    +'<div class="mut" style="margin-top:6px;">At your current assumptions ('+(lossPerDollar*100).toFixed(0)+'c of year-1 loss per $1 of price).</div>';
+
+  // stocks vs STR on the down payment, 10 yr
+  var sret=num('stockret')/100, apr=num('apprec')/100;
+  var stocksEnd=down*Math.pow(1+sret,10);
+  var apprecTotal=price*(Math.pow(1+apr,10)-1);
+  var paydown=loan*0.14;                                         // ~14% of loan over 10 yr
+  var taxReinvest=saved*Math.pow(1+sret,9);
+  var strEquity=down+apprecTotal+paydown;
+  var strTotal=strEquity+taxReinvest;
+  var diff=strTotal-stocksEnd;
+  document.getElementById('cmp_out').innerHTML=
+    row('Same cash in stocks (10 yr)',stocksEnd)
+    +'<div class="grp">Same cash as STR down payment</div>'
+    +row('Your equity (down + apprec + paydown)',strEquity)+row('+ year-1 tax saved, reinvested',taxReinvest)+rowB('STR total (10 yr)',strTotal)
+    +'<div class="row rowB"><label class="win">STR advantage</label><span class="win">'+money(diff)+'</span></div>';
+}
+calc();
+</script>
+</body>
+</html>"""
+
+
 # --- Price cache + background refresh -------------------------------------
 # Refreshing on every request is slow (26 page fetches) and hammers the source.
 # Cache the rendered HTML and refresh in the background, at most once per TTL.
@@ -931,6 +1550,24 @@ class PortfolioHandler(http.server.BaseHTTPRequestHandler):
                 self.send_header('Cache-Control', 'no-cache')
                 self.end_headers()
                 self.wfile.write((_cache["html"] or "Loading prices, refresh in a moment...").encode())
+        elif self.path == '/tax':
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.send_header('Cache-Control', 'no-cache')
+            self.end_headers()
+            self.wfile.write(generate_tax_html().encode())
+        elif self.path == '/str':
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.send_header('Cache-Control', 'no-cache')
+            self.end_headers()
+            self.wfile.write(generate_str_html().encode())
+        elif self.path == '/markets':
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.send_header('Cache-Control', 'no-cache')
+            self.end_headers()
+            self.wfile.write(generate_markets_html().encode())
         elif self.path == '/healthz':
             self.send_response(200)
             self.end_headers()
