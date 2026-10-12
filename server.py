@@ -1001,7 +1001,7 @@ input[type=number] { background:rgba(255,255,255,.08); border:1px solid rgba(0,2
   <div class="row"><label>Dividends (MS)</label><input type="number" id="t_div" value="3910" oninput="calc()"></div>
   <div class="row"><label>Net short-term gain</label><input type="number" id="t_st" value="-2963" oninput="calc()"></div>
   <div class="row"><label>Net long-term gain</label><input type="number" id="t_lt" value="6950" oninput="calc()"></div>
-  <div class="row"><label>Loan interest received (Leon/CKS notes)</label><input type="number" id="t_loanint" value="0" oninput="calc()"></div>
+  <div class="row"><label>Loan interest received (Leon/CKS notes)</label><input type="number" id="t_loanint" value="722" oninput="calc()"></div>
   <div class="grp">Income &mdash; Pabrai K-1 (estimate)</div>
   <div class="row"><label>Interest</label><input type="number" id="p_int" value="1334" oninput="calc()"></div>
   <div class="row"><label>Dividends</label><input type="number" id="p_div" value="20359" oninput="calc()"></div>
@@ -1022,7 +1022,7 @@ input[type=number] { background:rgba(255,255,255,.08); border:1px solid rgba(0,2
   <div class="owe" id="jOwe">$0</div>
   <div class="grp">Received so far (locked)</div>
   <div class="row"><label>Short-term gain received</label><input type="number" id="j_st_r" value="0" oninput="calc()"></div>
-  <div class="row"><label>Long-term gain received</label><input type="number" id="j_lt_r" value="21483" oninput="calc()"></div>
+  <div class="row"><label>Long-term gain received</label><input type="number" id="j_lt_r" value="51483" oninput="calc()"></div>
   <div class="row" style="color:#00ff88;font-weight:bold;"><label style="color:#00ff88;">Est. tax on amount received (locked)</label><span id="j_tax_r"></span></div>
   <div class="grp">Additional expected (planning)</div>
   <div class="row"><label>More short-term gain</label><input type="number" id="j_st_a" value="0" oninput="calc()"></div>
