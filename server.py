@@ -29,6 +29,7 @@ GF_MAP = {
     "WDAY": ("WDAY", "NASDAQ"), "META": ("META", "NASDAQ"), "RDI": ("RDI", "NASDAQ"),
     "METC": ("METC", "NASDAQ"),
     "AMR": ("AMR", "NYSE"), "BN": ("BN", "NYSE"), "CNR": ("CNR", "NYSE"),
+    "HCC": ("HCC", "NYSE"),
     "MIAX": ("MIAX", "NYSE"), "NE": ("NE", "NYSE"), "RIG": ("RIG", "NYSE"),
     "SNAP": ("SNAP", "NYSE"), "SOC": ("SOC", "NYSE"), "TDW": ("TDW", "NYSE"),
     "TPB": ("TPB", "NYSE"),
@@ -65,12 +66,14 @@ ANNABAY_HOLDINGS = {
     "CNR": {"name": "Core Natural Resources", "qty": 1000, "cost": 75500},
     "MIAX": {"name": "Miami International Holdings", "qty": 4500, "cost": 165000},  # bought +2000 @ $30 (2026-10-12), was 2500 @ 105000
     "SNAP": {"name": "Snap Inc", "qty": 20000, "cost": 78800},
+    "HCC": {"name": "Warrior Met Coal", "qty": 2000, "cost": 162000},  # bought 2000 @ $81 (2026-11-02)
     # EUR-quoted (Euronext Amsterdam); priced native EUR via Google, fx_rate = EUR->USD. New on 10.09.2026 statement.
     "UMG.AS": {"name": "Universal Music Group", "qty": 6500, "cost": 112421, "currency": "EUR", "fx_rate": 1.1642},
 }
 ANNABAY_OPTIONS = {
     # WDAY Call JAN28 $150 closed/sold — no longer on 10.09.2026 statement.
     "SOC": {"name": "Call Sable Offshore JAN27 $12.5", "contracts": 100, "cost": 67000, "strike": 12.5, "expiry": "15.01.2027", "market_value": 1450},  # 10.09 statement mark $0.15
+    "METC": {"name": "Call Ramaco Res JAN28 $8", "contracts": 420, "cost": 98700, "strike": 8, "expiry": "21.01.2028", "market_value": 141750},  # bought 420 @ $2.35 (2026-11-02); mark $3.375
 }
 ANNABAY_FOREIGN = {
     "DBO.TO": {"name": "D-Box Technologies", "qty": 125000, "cost": 73893, "currency": "CAD", "fx_rate": 1.3800},
@@ -80,7 +83,8 @@ ANNABAY_FOREIGN = {
 }
 # Per 10.09.2026 statement: USD current acct $251'362; EUR current acct 1'089 (= $1'268 @ 1.1642)
 # 2026-10-12: bought 2000 MIAX @ $30 = -$60'000 USD -> 251362 - 60000 = 191362
-ANNABAY_CASH = {"USD": 191362, "EUR": 1268}
+# 2026-11-02: bought 2000 HCC @ $81 = -$162'000; 420 METC JAN28 $8 calls @ $2.35 = -$98'700 -> 191362 - 162000 - 98700 = -69338
+ANNABAY_CASH = {"USD": -69338, "EUR": 1268}
 
 # ============== PORTFOLIO 2: SCHWAB 1 ==============
 # Reconciled to Schwab Positions 10.12.2026 (Total cost basis $361,404.03, MV $666,744.65).
