@@ -65,10 +65,10 @@ ANNABAY_HOLDINGS = {
     "BN": {"name": "Brookfield Corp", "qty": 6000, "cost": 271220},
     "CNR": {"name": "Core Natural Resources", "qty": 1000, "cost": 75500},
     "MIAX": {"name": "Miami International Holdings", "qty": 4500, "cost": 165000},  # bought +2000 @ $30 (2026-10-12), was 2500 @ 105000
-    "SNAP": {"name": "Snap Inc", "qty": 20000, "cost": 78800},
-    "HCC": {"name": "Warrior Met Coal", "qty": 2000, "cost": 162000},  # bought 2000 @ $81 (2026-11-02)
+    "SNAP": {"name": "Snap Inc", "qty": 12400, "cost": 48856},  # sold 7600 @ $5.45 (2026-11-03 open); was 20000 @ 78800
+    # HCC (Warrior Met Coal) removed 2026-11-03 — the 2026-11-02 purchase never actually happened.
     # EUR-quoted (Euronext Amsterdam); priced native EUR via Google, fx_rate = EUR->USD. New on 10.09.2026 statement.
-    "UMG.AS": {"name": "Universal Music Group", "qty": 6500, "cost": 112421, "currency": "EUR", "fx_rate": 1.1642},
+    "UMG.AS": {"name": "Universal Music Group", "qty": 4380, "cost": 75754, "currency": "EUR", "fx_rate": 1.1642},  # sold 2120 @ EUR17.01 (2026-11-03 open); was 6500 @ 112421
 }
 ANNABAY_OPTIONS = {
     # WDAY Call JAN28 $150 closed/sold — no longer on 10.09.2026 statement.
@@ -83,8 +83,9 @@ ANNABAY_FOREIGN = {
 }
 # Per 10.09.2026 statement: USD current acct $251'362; EUR current acct 1'089 (= $1'268 @ 1.1642)
 # 2026-10-12: bought 2000 MIAX @ $30 = -$60'000 USD -> 251362 - 60000 = 191362
-# 2026-11-02: bought 2000 HCC @ $81 = -$162'000; 420 METC JAN28 $8 calls @ $2.35 = -$98'700 -> 191362 - 162000 - 98700 = -69338
-ANNABAY_CASH = {"USD": -69338, "EUR": 1268}
+# 2026-11-02: bought 420 METC JAN28 $8 calls @ $2.35 = -$98'700 -> 191362 - 98700 = 92662 (HCC purchase reversed: never bought)
+# 2026-11-03: sold 7600 SNAP @ $5.45 = +$41'420 -> 92662 + 41420 = 134082; sold 2120 UMG.AS @ EUR17.01 = +EUR36'061 -> 1268 + 36061 = 37329
+ANNABAY_CASH = {"USD": 134082, "EUR": 37329}
 
 # ============== PORTFOLIO 2: SCHWAB 1 ==============
 # Reconciled to Schwab Positions 10.12.2026 (Total cost basis $361,404.03, MV $666,744.65).
